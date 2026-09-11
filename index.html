@@ -76,10 +76,19 @@
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
   }
+  /* Barber pole. The stripes run at -45deg with a 36px period measured along
+     the gradient axis, so one full turn horizontally is 36 * sqrt(2) = 50.91px.
+     Tiling at exactly that width and sliding one tile per cycle loops with no
+     visible seam. */
   .tape{
-    height:14px;
-    background:repeating-linear-gradient(-45deg,var(--hazard) 0 18px,var(--ink) 18px 36px);
+    height:16px;
+    background-image:repeating-linear-gradient(-45deg,var(--hazard) 0 18px,var(--ink) 18px 36px);
+    background-size:50.9117px 100%;
+    background-repeat:repeat;
+    animation:barber 1.6s linear infinite;
+    box-shadow:inset 0 -3px 6px -3px rgba(0,0,0,.45);
   }
+  @keyframes barber{ to{ background-position:50.9117px 0; } }
   .wrap{max-width:1080px;margin:0 auto;padding:26px 20px 64px;display:flex;flex-direction:column;gap:26px;}
 
   header.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;}
@@ -167,6 +176,13 @@
   .rank li b{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;}
   .rank li span{color:var(--muted);font-size:13px;font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
   .rank p{margin:0;padding:9px 14px 11px;font-size:14px;color:var(--muted);border-top:1px dashed var(--line);}
+
+  .odds{
+    font-size:15px;color:var(--muted);
+    padding:12px 14px;border-left:3px solid var(--alert);
+    background:var(--panel-2);border-radius:0 3px 3px 0;
+  }
+  .odds b{color:var(--ink);font-weight:600;}
 
   /* ---- chart ---- */
   .chart-wrap{border:1px solid var(--line);border-radius:3px;background:var(--panel);padding:16px 16px 10px;}
@@ -318,7 +334,7 @@
   <header class="masthead">
     <div>
       <div class="wordmark">Accidental Drive-Thru</div>
-      <div class="site">accidentaldrivethru.com &middot; Columbus, Ohio &middot; Franklin County tally</div>
+      <div class="site">accidentaldrivethru.com &middot; Columbus, Ohio &middot; <a href="https://accidentaldrivethru.com/about.html">how this is counted</a></div>
     </div>
     <div class="site">Sourced from <b>police blotter</b>, <b>local news</b>, and <b>one very tired glazier</b></div>
   </header>
@@ -349,11 +365,13 @@
           <span>since <b id="lastStamp">&mdash;</b></span>
         </div>
 
+        <div class="odds" id="odds"></div>
+
         <div class="record">
-          <div><span>Logged in 2025</span><strong>71</strong></div>
-          <div><span>Since 2022</span><strong>180+</strong></div>
-          <div><span>Typical gap</span><strong>~5 days</strong></div>
-          <div><span>Bollards that would help</span><strong>Many</strong></div>
+          <div><span>Fire runs, 2023</span><strong>279</strong></div>
+          <div><span>Fire runs, 2022</span><strong>313</strong></div>
+          <div><span>On this board</span><strong id="totalLogged">&mdash;</strong></div>
+          <div><span>Longest quiet stretch</span><strong id="longest">&mdash;</strong></div>
         </div>
       </div>
 
@@ -453,8 +471,8 @@
 
   <div class="stats">
     <div class="stat"><span>The local term</span><strong>Carikaze</strong><small>Columbus coinage, tracked on Instagram as @cbuscarikaze</small></div>
-    <div class="stat"><span>Crashes logged, 2025</span><strong>71</strong><small>by journalist Paul Meara &mdash; and he says that undercounts it</small></div>
-    <div class="stat"><span>Police-documented</span><strong>67</strong><small>through June 2025 alone, per Columbus Division of Police</small></div>
+    <div class="stat"><span>Every</span><strong>1.3 days</strong><small>Columbus Fire is dispatched to a vehicle-into-structure run</small></div>
+    <div class="stat"><span>Media-tracked, 2025</span><strong>71</strong><small>counted by journalist Paul Meara &mdash; a fraction of the fire runs</small></div>
     <div class="stat"><span>Bollard spec</span><strong>ASTM F3016</strong><small>rated to stop 10&ndash;30 mph. Most storefronts have none</small></div>
   </div>
 
@@ -479,6 +497,14 @@
         </div>
         <div class="rank"><h3>Hit more than once</h3><ol id="rankRepeat"></ol></div>
       </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What time of day</h2>
+    <div class="chart-wrap">
+      <svg id="hours" viewBox="0 0 720 190" role="img" aria-label="Bar chart of crashes by hour of day"></svg>
+      <p class="chart-legend" id="hoursNote"></p>
     </div>
   </section>
 
@@ -513,7 +539,7 @@
 </div>
 
 <!-- DATA:START -->
-<script id="incidents" type="application/json">[{"date":"2026-09-01","time":"10:30","name":"ECDC offices","address":"E. Main St","area":"East Columbus","kind":"office","cause":"unknown","note":"Straight through the front door. Nobody hurt.","source":"ABC6","url":"https://abc6onyourside.com/news/local/car-crashed-through-front-door-of-building-in-east-columbus-on-tuesday-morning-ecdc-development-company-main-street","lat":39.95476,"lon":-82.85301,"geo":"street"},{"date":"2026-08-31","time":"","name":"Brick wall, Clintonville","address":"","area":"Clintonville","kind":"other","cause":"unknown","note":"Through a brick wall, narrowly missing pedestrians.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-drives-through-brick-wall-in-clintonville-almost-hitting-pedestrians","lat":40.0392,"lon":-83.0096,"geo":"area"},{"date":"2026-08-24","time":"","name":"Foxglove Hollow","address":"285 W. Center St","area":"Central Ohio","kind":"retail","cause":"unknown","note":"Home decor shop posted the front window to Instagram.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-front-of-central-ohio-home-decor-store","lat":39.98779,"lon":-82.91677,"geo":"address"},{"date":"2026-08-17","time":"","name":"Wild Goose Creative","address":"480 W. Town St","area":"Franklinton","kind":"nonprofit","cause":"unknown","note":"“Today we became part of a time-honored Columbus tradition.”","source":"614NOW","url":"https://614now.com/2026/hot-topics/we-became-part-of-a-time-honored-columbus-tradition-car-crashes-into-columbus-arts-hub","lat":39.95741,"lon":-83.01289,"geo":"address"},{"date":"2026-07-22","time":"","name":"Aardvark Wine & Beer","address":"","area":"Columbus","kind":"bar","cause":"unknown","note":"Shop filed it under “run-in.”","source":"614NOW","url":"https://614now.com/2026/hot-topics/columbus-wine-and-beer-shop-faces-property-damage-due-to-car-crash","geo":"none"},{"date":"2026-07-13","time":"","name":"German Village restaurant","address":"","area":"German Village","kind":"restaurant","cause":"unknown","note":"Second German Village business hit in eight days.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-beloved-german-village-restaurant","lat":39.9464,"lon":-82.99285,"geo":"area"},{"date":"2026-07-06","time":"","name":"High Street bar","address":"High St","area":"German Village","kind":"bar","cause":"unknown","note":"Hit two weeks after reopening from a remodel.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-german-village-bar-two-weeks-after-remodel","lat":39.96301,"lon":-82.99822,"geo":"street"},{"date":"2026-06-08","time":"","name":"Hoggy's BBQ","address":"830 Bethel Rd","area":"Northwest","kind":"restaurant","cause":"delivery","note":"Delivery driver hit it, backed up, hit it again. Killed the walk-in cooler. Second time since 2023.","source":"614NOW","url":"https://614now.com/2026/food-drink/it-happened-again-car-crashes-into-same-columbus-restaurant-for-the-second-time","lat":40.06362,"lon":-83.04102,"geo":"address"},{"date":"2026-04-30","time":"","name":"Solis Mammography","address":"974 Bethel Rd","area":"Northwest","kind":"medical","cause":"unknown","note":"Red crossover. Second Bethel Rd building hit this year.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-columbus-mammogram-center","lat":40.0634,"lon":-83.04506,"geo":"address"},{"date":"2026-04-02","time":"","name":"Chase Bank","address":"1600 Hilliard Rome Rd","area":"West Side","kind":"bank","cause":"unknown","note":"Hit the bank, finished in the bushes. No injuries.","source":"614NOW","url":"https://614now.com/2026/hot-topics/driver-crashes-into-west-columbus-bank-ends-up-in-bushes","lat":39.98394,"lon":-83.15,"geo":"address"},{"date":"2026-03-27","time":"16:30","name":"Detached garage","address":"","area":"Westgate","kind":"home","cause":"hit & run","note":"Stolen white Honda Accord. Driver got out and ran east.","source":"614NOW","url":"https://614now.com/2026/hot-topics/watch-car-crashes-into-garage-in-hilltop-neighborhood","lat":39.94665,"lon":-83.0822,"geo":"area"},{"date":"2026-02-27","time":"","name":"Clintonville business","address":"","area":"Clintonville","kind":"retail","cause":"unknown","note":"","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashing-into-building/car-crashes-into-clintonville-business","lat":40.0392,"lon":-83.0096,"geo":"area"},{"date":"2026-02-15","time":"04:00","name":"Infinity Pharmacy","address":"","area":"Columbus","kind":"retail","cause":"unknown","note":"Four in the morning, through the storefront.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashing-into-building/car-crashes-into-columbus-pharmacy","geo":"none"},{"date":"2026-01-23","time":"","name":"Mezcla","address":"1022 Summit St","area":"Weinland Park","kind":"restaurant","cause":"unknown","note":"Restaurant closed afterward. One person injured.","source":"Columbus Underground","url":"https://columbusunderground.com/mezcla-closes-after-car-crashes-into-building-ak1/","lat":39.98358,"lon":-83.00132,"geo":"address"},{"date":"2026-01-01","time":"19:55","name":"Meister's Bar and Pizza","address":"1186 Chambers Rd","area":"Grandview","kind":"restaurant","cause":"parking","note":"Silver SUV, apparently trying to park. First of the year, four hours before midnight.","source":"614NOW","url":"https://614now.com/2026/hot-topics/first-of-the-year-crash-crashes-into-columbus-pizza-spot-on-new-years-day","lat":39.99374,"lon":-83.03975,"geo":"address"},{"date":"2025-01-15","time":"19:00","name":"Hobby Lobby","address":"Hilliard-Rome Rd","area":"West Side","kind":"retail","cause":"unknown","note":"SUV through the entrance.","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/incidents-of-cars-into-buildings-seems-to-be-climbing-in-columbus/","lat":40.00107,"lon":-83.15349,"geo":"street"},{"date":"2025-01-02","time":"","name":"Vow Studio + Salon","address":"W. 5th Ave","area":"Marble Cliff","kind":"retail","cause":"unknown","note":"Up a hill, up a flight of stairs, into the storefront. Repairs took nine months.","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/columbus-car-crashes-building/","lat":39.98741,"lon":-83.01383,"geo":"address"},{"date":"2023-01-15","time":"","name":"Hoggy's BBQ","address":"830 Bethel Rd","area":"Northwest","kind":"restaurant","cause":"drunk","note":"First time. Drunk driver, front entrance, closed several weeks.","source":"614NOW","url":"https://614now.com/2026/food-drink/it-happened-again-car-crashes-into-same-columbus-restaurant-for-the-second-time","lat":40.06362,"lon":-83.04102,"geo":"address"},{"date":"2022-11-03","time":"","name":"Three buildings in one night","address":"","area":"Columbus","kind":"other","cause":"unknown","note":"Three separate crashes, same night, three people injured. Still the record.","source":"Wikipedia","url":"https://en.wikipedia.org/wiki/Carikaze","geo":"none"}]</script>
+<script id="incidents" type="application/json">[{"date":"2026-09-01","time":"10:30","name":"ECDC offices","address":"E. Main St","area":"East Columbus","kind":"office","cause":"unknown","note":"Straight through the front door. Nobody hurt.","source":"ABC6","url":"https://abc6onyourside.com/news/local/car-crashed-through-front-door-of-building-in-east-columbus-on-tuesday-morning-ecdc-development-company-main-street","lat":39.95476,"lon":-82.85301,"geo":"street"},{"date":"2026-08-31","time":"","name":"Brick wall, Clintonville","address":"","area":"Clintonville","kind":"other","cause":"unknown","note":"Through a brick wall, narrowly missing pedestrians.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-drives-through-brick-wall-in-clintonville-almost-hitting-pedestrians","lat":40.0392,"lon":-83.0096,"geo":"area"},{"date":"2026-08-24","time":"","name":"Foxglove Hollow","address":"285 W. Center St","area":"Central Ohio","kind":"retail","cause":"unknown","note":"Home decor shop posted the front window to Instagram.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-front-of-central-ohio-home-decor-store","lat":39.98779,"lon":-82.91677,"geo":"address"},{"date":"2026-08-17","time":"","name":"Wild Goose Creative","address":"480 W. Town St","area":"Franklinton","kind":"nonprofit","cause":"unknown","note":"“Today we became part of a time-honored Columbus tradition.”","source":"614NOW","url":"https://614now.com/2026/hot-topics/we-became-part-of-a-time-honored-columbus-tradition-car-crashes-into-columbus-arts-hub","lat":39.95741,"lon":-83.01289,"geo":"address"},{"date":"2026-07-22","time":"","name":"Aardvark Wine & Beer","address":"","area":"Columbus","kind":"bar","cause":"unknown","note":"Shop filed it under “run-in.”","source":"614NOW","url":"https://614now.com/2026/hot-topics/columbus-wine-and-beer-shop-faces-property-damage-due-to-car-crash","geo":"none"},{"date":"2026-07-13","time":"","name":"German Village restaurant","address":"","area":"German Village","kind":"restaurant","cause":"unknown","note":"Second German Village business hit in eight days.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-beloved-german-village-restaurant","lat":39.9464,"lon":-82.99285,"geo":"area"},{"date":"2026-07-06","time":"","name":"High Street bar","address":"High St","area":"German Village","kind":"bar","cause":"unknown","note":"Hit two weeks after reopening from a remodel.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-german-village-bar-two-weeks-after-remodel","lat":39.96301,"lon":-82.99822,"geo":"street"},{"date":"2026-06-08","time":"","name":"Hoggy's BBQ","address":"830 Bethel Rd","area":"Northwest","kind":"restaurant","cause":"delivery","note":"Delivery driver hit it, backed up, hit it again. Killed the walk-in cooler. Second time since 2023.","source":"614NOW","url":"https://614now.com/2026/food-drink/it-happened-again-car-crashes-into-same-columbus-restaurant-for-the-second-time","lat":40.06362,"lon":-83.04102,"geo":"address"},{"date":"2026-04-30","time":"","name":"Solis Mammography","address":"974 Bethel Rd","area":"Northwest","kind":"medical","cause":"unknown","note":"Red crossover. Second Bethel Rd building hit this year.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-columbus-mammogram-center","lat":40.0634,"lon":-83.04506,"geo":"address"},{"date":"2026-04-02","time":"","name":"Chase Bank","address":"1600 Hilliard Rome Rd","area":"West Side","kind":"bank","cause":"unknown","note":"Hit the bank, finished in the bushes. No injuries.","source":"614NOW","url":"https://614now.com/2026/hot-topics/driver-crashes-into-west-columbus-bank-ends-up-in-bushes","lat":39.98394,"lon":-83.15,"geo":"address"},{"date":"2026-03-27","time":"16:30","name":"Detached garage","address":"","area":"Westgate","kind":"home","cause":"hit & run","note":"Stolen white Honda Accord. Driver got out and ran east.","source":"614NOW","url":"https://614now.com/2026/hot-topics/watch-car-crashes-into-garage-in-hilltop-neighborhood","lat":39.94665,"lon":-83.0822,"geo":"area"},{"date":"2026-02-27","time":"","name":"Clintonville business","address":"","area":"Clintonville","kind":"retail","cause":"unknown","note":"","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashing-into-building/car-crashes-into-clintonville-business","lat":40.0392,"lon":-83.0096,"geo":"area"},{"date":"2026-02-15","time":"04:00","name":"Infinity Pharmacy","address":"","area":"Columbus","kind":"retail","cause":"unknown","note":"Four in the morning, through the storefront.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashing-into-building/car-crashes-into-columbus-pharmacy","geo":"none"},{"date":"2026-02-06","time":"","name":"Stolen car crashes into historic Dublin building","address":"","area":"Dublin","kind":"restaurant","cause":"hit & run","vehicle":"","note":"New year, same issue with cars crashing into buildings.","source":"614NOW","url":"https://614now.com/2026/hot-topics/stolen-car-crashes-into-historic-dublin-building","review":true,"dated":false,"lat":40.09832,"lon":-83.08649,"geo":"area"},{"date":"2026-01-29","time":"","name":"Snow plow drives into Columbus-area Jimmy John’s, shatters front window","address":"2497 E. Main St","area":"Bexley","kind":"restaurant","cause":"unknown","vehicle":"","note":"A Bexley Jimmy John’s is open despite a snow plow plowing into it.","source":"614NOW","url":"https://614now.com/2026/food-drink/snow-plow-drives-into-columbus-area-jimmy-johns-shatters-front-window","review":true,"dated":false,"lat":39.95728,"lon":-82.98956,"geo":"address"},{"date":"2026-01-23","time":"","name":"Mezcla","address":"1022 Summit St","area":"Weinland Park","kind":"restaurant","cause":"unknown","note":"Restaurant closed afterward. One person injured.","source":"Columbus Underground","url":"https://columbusunderground.com/mezcla-closes-after-car-crashes-into-building-ak1/","lat":39.98358,"lon":-83.00132,"geo":"address"},{"date":"2026-01-20","time":"08:00","name":"Driver crashes into Ohio restaurant","address":"224 W. Main St","area":"Columbus","kind":"restaurant","cause":"drunk","vehicle":"","note":"It appears to not be just Columbus, but Ohio as a whole that has a cars-crashing-into-buildings problem.","source":"614NOW","url":"https://614now.com/2026/food-drink/videos-driver-crashes-into-ohio-restaurant","review":true,"dated":false,"lat":39.95621,"lon":-83.00748,"geo":"address"},{"date":"2026-01-19","time":"","name":"Ohio woman choking on French fry crashes into gas station, collapses canopy","address":"","area":"Downtown","kind":"retail","cause":"medical","vehicle":"Buick Lesabre","note":"We all know the dangers of drinking and driving, but apparently eating and driving is dangerous as well.","source":"614NOW","url":"https://614now.com/2026/hot-topics/ohio-woman-choking-on-french-fry-crashes-into-gas-station-collapses-canopy","review":true,"dated":false,"lat":39.9627,"lon":-82.9979,"geo":"area"},{"date":"2026-01-12","time":"","name":"Columbus animal clinic posts photos of wreckage after car drives through building","address":"5303 W. Broad St","area":"Columbus","kind":"restaurant","cause":"unknown","vehicle":"","note":"A Columbus veterinarian is picking up the pieces after a car crashed into its West Side space.","source":"614NOW","url":"https://614now.com/2026/hot-topics/look-inside-columbus-animal-clinic-posts-photos-of-wreckage-after-car-drives-through-building","review":true,"dated":true,"lat":39.95403,"lon":-83.09222,"geo":"address"},{"date":"2026-01-12","time":"","name":"Car slams into Hilliard gas station for second time","address":"","area":"Hilliard","kind":"retail","cause":"unknown","vehicle":"","note":"A Hilliard gas station was hit by a car for the second time in recent memory early Friday morning.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashing-into-building/car-slams-into-hilliard-gas-station-for-second-time","review":true,"dated":false,"lat":39.99688,"lon":-83.14785,"geo":"area"},{"date":"2026-01-09","time":"07:00","name":"Car crashes into Upper Arlington cafe","address":"","area":"Upper Arlington","kind":"restaurant","cause":"reverse","vehicle":"","note":"Would you like your eggs scrambled with bits of glass in them?","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-upper-arlington-breakfast-hotspot","review":true,"dated":false,"lat":40.00625,"lon":-83.10547,"geo":"area"},{"date":"2026-01-01","time":"19:55","name":"Meister's Bar and Pizza","address":"1186 Chambers Rd","area":"Grandview","kind":"restaurant","cause":"parking","note":"Silver SUV, apparently trying to park. First of the year, four hours before midnight.","source":"614NOW","url":"https://614now.com/2026/hot-topics/first-of-the-year-crash-crashes-into-columbus-pizza-spot-on-new-years-day","lat":39.99374,"lon":-83.03975,"geo":"address"},{"date":"2025-12-09","time":"","name":"Central Ohio store forced to temporarily close after car crashes into it","address":"292 E. Main St","area":"Columbus","kind":"retail","cause":"unknown","vehicle":"","note":"Central Ohio stores closes after car crashes into it It’s been awhile since we posted a car-crashing-into-building story, but that doesn’t mean it hasn’t been happening.","source":"614NOW","url":"https://614now.com/2025/hot-topics/central-ohio-store-forced-to-temporarily-close-after-car-crashes-into-it","review":true,"dated":false,"lat":39.95728,"lon":-82.9903,"geo":"address"},{"date":"2025-09-24","time":"","name":"Car crashes into another local business","address":"960 Parsons Ave","area":"Columbus","kind":"other","cause":"unknown","vehicle":"","note":"On Monday, in the pouring rain, another car crashed into another business.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-another-local-business","review":true,"dated":false,"lat":39.944,"lon":-82.98287,"geo":"address"},{"date":"2025-09-10","time":"","name":"Gahanna salon remains open despite car crashing into building","address":"","area":"Gahanna","kind":"retail","cause":"unknown","vehicle":"Lincoln Cir","note":"It happened again, Columbus.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashing-into-building/gahanna-salon-remains-open-despite-car-crashing-into-building","review":true,"dated":false,"lat":40.00298,"lon":-82.8592,"geo":"area"},{"date":"2025-08-19","time":"07:20","name":"Car crashes into Clintonville apartment this morning","address":"","area":"Clintonville","kind":"home","cause":"unknown","vehicle":"Jeep","note":"Around 7:20 a.m.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-clintonville-apartment-this-morning","review":true,"dated":false,"lat":40.0392,"lon":-83.0096,"geo":"area"},{"date":"2025-08-11","time":"03:15","name":"Car crashes into autobody shop at busy Columbus intersection for second time in 3 months","address":"","area":"Columbus","kind":"medical","cause":"unknown","vehicle":"","note":"An autobody shop at the corner of Olentangy River Rd.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-autobody-shop-at-busy-columbus-intersection-for-second-time-in-3-months","review":true,"dated":false,"geo":"none"},{"date":"2025-08-08","time":"18:00","name":"Car plows through Downtown bike rack, hits pedestrian, almost hits restaurant","address":"","area":"Downtown","kind":"restaurant","cause":"unknown","vehicle":"","note":"On Wednesday, a popular Downtown deli was almost smashed into, but a bike rack may have saved the day.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-plows-through-downtown-bike-rack-hits-pedestrian-almost-hits-restaurant","review":true,"dated":false,"lat":39.9627,"lon":-82.9979,"geo":"area"},{"date":"2025-08-04","time":"18:00","name":"Car crashes into popular Clintonville restaurant, taking out patio","address":"","area":"Columbus","kind":"restaurant","cause":"unknown","vehicle":"","note":"On Saturday, August 2, around 6 p.m., a car jumped the curb and crashed into a popular chain’s patio.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-popular-clintonville-restaurant-taking-out-patio","review":true,"dated":false,"geo":"none"},{"date":"2025-06-04","time":"","name":"Car crashes into popular Mexican restaurant","address":"530 Norton Rd","area":"Columbus","kind":"restaurant","cause":"unknown","vehicle":"","note":"On Saturday, a popular spot for authentic birria and incredible street tacos was damaged by a car crashing into the building from the parking lot.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-popular-mexican-restaurant","review":true,"dated":false,"lat":39.94107,"lon":-83.14259,"geo":"address"},{"date":"2025-05-29","time":"","name":"Car crashes into Clintonville bank","address":"","area":"Clintonville","kind":"bank","cause":"unknown","vehicle":"","note":"A car crashed into a Clintonville building Thursday morning.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-clintonville-bank","review":true,"dated":true,"lat":40.0392,"lon":-83.0096,"geo":"area"},{"date":"2025-05-22","time":"","name":"Car crashes into Downtown building","address":"","area":"Downtown","kind":"other","cause":"unknown","vehicle":"","note":"Yesterday, another car crashed into a Columbus building.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-downtown-building","review":true,"dated":true,"lat":39.9627,"lon":-82.9979,"geo":"area"},{"date":"2025-05-21","time":"","name":"Two cars crash into popular Columbus grocery store","address":"","area":"Columbus","kind":"retail","cause":"unknown","vehicle":"","note":"Yup…it happened again.","source":"614NOW","url":"https://614now.com/2025/hot-topics/two-cars-crash-into-popular-columbus-grocery-store","review":true,"dated":false,"geo":"none"},{"date":"2025-05-19","time":"","name":"Car crashes into popular Central Ohio breakfast & lunch restaurant","address":"","area":"Canal Winchester","kind":"restaurant","cause":"unknown","vehicle":"","note":"Fortunately, no one was hurt when a car crashed into a popular spot for breakfast and lunch, however, extensive damage did occur.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-popular-central-ohio-breakfast-lunch-restaurant","review":true,"dated":false,"lat":39.84171,"lon":-82.80378,"geo":"area"},{"date":"2025-04-30","time":"","name":"Car allegedly runs red light and crashes into local business","address":"","area":"Westerville","kind":"retail","cause":"unknown","vehicle":"","note":"On Monday evening, a car allegedly ran a red light on Westerville Rd., smashed into another car, jumped over a concrete curb, and slammed into a local business.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-allegedly-runs-red-light-and-crashes-into-local-business","review":true,"dated":false,"lat":40.06791,"lon":-82.9231,"geo":"area"},{"date":"2025-04-28","time":"13:50","name":"FedEx truck crashes through Central Ohio home, destroys bathroom & office","address":"","area":"Westerville","kind":"restaurant","cause":"unknown","vehicle":"","note":"Yesterday, April 28th, around 1:50 p.m., a FedEx delivery truck plowed through a Westerville home.","source":"614NOW","url":"https://614now.com/2025/hot-topics/fedex-truck-crashes-through-central-ohio-home-destroys-bathroom-office","review":true,"dated":true,"lat":40.06791,"lon":-82.9231,"geo":"area"},{"date":"2025-04-14","time":"","name":"Car crashes through Central Ohio restaurant forcing dining area to close","address":"211 W. Cherry St","area":"Columbus","kind":"restaurant","cause":"unknown","vehicle":"","note":"Well……it happened again, but I feel like I don’t even need to say that at this point.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-through-central-ohio-restaurant-forcing-dining-area-to-close","review":true,"dated":false,"lat":39.9567,"lon":-83.00062,"geo":"address"},{"date":"2025-04-11","time":"","name":"Car crashes into home goods store; left there for almost a week","address":"2433 E. Dublin Granville Rd","area":"Dublin","kind":"home","cause":"unknown","vehicle":"","note":"After midnight last Saturday, a car crashed into a popular store for discounted home goods.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-home-goods-store-and-has-been-there-for-almost-a-week","review":true,"dated":false,"lat":40.08384,"lon":-82.95397,"geo":"address"},{"date":"2025-04-07","time":"00:30","name":"Car crashes into local bar & grill","address":"234 King Ave","area":"Columbus","kind":"restaurant","cause":"unknown","vehicle":"","note":"Yup, it happened again.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-local-bar-grill","review":true,"dated":false,"lat":39.99048,"lon":-83.01277,"geo":"address"},{"date":"2025-03-20","time":"","name":"Car crashes into Central Ohio business","address":"19 London Rd","area":"Delaware","kind":"other","cause":"parking","vehicle":"","note":"This time, a Walgreens in Delaware was the victim.","source":"614NOW","url":"https://614now.com/2025/hot-topics/another-car-crashes-into-central-ohio-business","review":true,"dated":false,"lat":39.83104,"lon":-82.9501,"geo":"address"},{"date":"2025-03-11","time":"17:00","name":"Two cars crash into Columbus houses a couple of hours apart","address":"","area":"Columbus","kind":"medical","cause":"unknown","vehicle":"","note":"The Columbus Division of Fire told 614Now that a person was transported to Grant Medical Center after crashing into a Milo-Grogan home.","source":"614NOW","url":"https://614now.com/2025/hot-topics/two-cars-crash-into-columbus-houses-a-couple-of-hours-apart","review":true,"dated":true,"geo":"none"},{"date":"2025-03-11","time":"03:15","name":"Driver injured after crashing into Columbus business","address":"2383 W. Broad St","area":"Columbus","kind":"medical","cause":"unknown","vehicle":"","note":"Another car crashed into a Columbus building.","source":"614NOW","url":"https://614now.com/2025/hot-topics/driver-injured-after-crashing-into-columbus-business","review":true,"dated":false,"lat":39.95534,"lon":-83.06406,"geo":"address"},{"date":"2025-03-04","time":"19:00","name":"Car crashes into Central Ohio daycare, driver flees the scene","address":"1343 S. Hamilton Rd","area":"Whitehall","kind":"school","cause":"hit & run","vehicle":"","note":"Around 7 p.m.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-central-ohio-daycare-driver-flees-the-scene","review":true,"dated":false,"lat":39.9477,"lon":-82.8777,"geo":"address"},{"date":"2025-03-03","time":"23:30","name":"Car crashes into Columbus library branch","address":"","area":"Columbus","kind":"school","cause":"unknown","vehicle":"","note":"Late Saturday evening, March 1st, around 11:30 p.m., police and the division of fire responded to a report of a vehicle crashing into yet another Columbus building.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashing-into-building/car-crashes-into-columbus-library-branch","review":true,"dated":false,"geo":"none"},{"date":"2025-02-19","time":"","name":"Car crashes into High Street business","address":"1424 N. High St","area":"Columbus","kind":"retail","cause":"unknown","vehicle":"","note":"Another business was the victim of a car crashing into its storefront.","source":"614NOW","url":"https://614now.com/2025/hot-topics/car-crashes-into-high-street-business","review":true,"dated":false,"lat":39.99144,"lon":-83.00623,"geo":"address"},{"date":"2025-02-16","time":"","name":"Car crashes into Downtown building","address":"395 E. Broad St","area":"Columbus","kind":"other","cause":"unknown","vehicle":"","note":"Another car-crashing-into-a-building incident occurred last night, marking the 13th this year.","source":"614NOW","url":"https://614now.com/2025/hot-topics/another-car-crashes-into-downtown-building","review":true,"dated":true,"lat":39.96334,"lon":-82.99018,"geo":"address"},{"date":"2025-01-31","time":"","name":"Car crashes into another Central Ohio grocery store","address":"720 W. Waterloo St","area":"Canal Winchester","kind":"retail","cause":"reverse","vehicle":"","note":"No, this Central Ohio grocery store did not start construction on a drive-thru option.","source":"614NOW","url":"https://614now.com/2025/hot-topics/another-car-crashes-into-another-central-ohio-grocery-store","review":true,"dated":true,"lat":39.84129,"lon":-82.80217,"geo":"address"},{"date":"2025-01-16","time":"19:00","name":"Car crashes into Columbus storefront","address":"","area":"Columbus","kind":"retail","cause":"unknown","vehicle":"","note":"Another day in Columbus, another car crashing into a business.","source":"614NOW","url":"https://614now.com/2025/hot-topics/another-car-crashes-into-columbus-storefront","review":true,"dated":false,"geo":"none"},{"date":"2025-01-15","time":"19:00","name":"Hobby Lobby","address":"Hilliard-Rome Rd","area":"West Side","kind":"retail","cause":"unknown","note":"SUV through the entrance.","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/incidents-of-cars-into-buildings-seems-to-be-climbing-in-columbus/","lat":40.00107,"lon":-83.15349,"geo":"street"},{"date":"2025-01-13","time":"10:15","name":"Grocery store damaged by car crashing into building","address":"199 Graceland Blvd","area":"Grandview","kind":"retail","cause":"unknown","vehicle":"Audi","note":"For the second time this year, a Kroger has been damaged from a car crashing into to the grocery store’s building.","source":"614NOW","url":"https://614now.com/2025/hot-topics/another-grocery-store-damaged-by-car-crashing-into-building","review":true,"dated":false,"lat":40.06511,"lon":-83.02539,"geo":"address"},{"date":"2025-01-02","time":"","name":"Vow Studio + Salon","address":"W. 5th Ave","area":"Marble Cliff","kind":"retail","cause":"unknown","note":"Up a hill, up a flight of stairs, into the storefront. Repairs took nine months.","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/columbus-car-crashes-building/","lat":39.98741,"lon":-83.01383,"geo":"address"},{"date":"2024-07-12","time":"","name":"Buckeye Hibachi","address":"5609 Chatterton Road","area":"Southeast","kind":"restaurant","cause":"unknown","note":"","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/has-there-been-a-high-number-of-car-crashes-into-columbus-buildings-this-year/","lat":39.91367,"lon":-82.84921,"geo":"address"},{"date":"2024-06-04","time":"","name":"Bravo","address":"1803 Olentangy River Road","area":"Northwest","kind":"restaurant","cause":"unknown","note":"","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/has-there-been-a-high-number-of-car-crashes-into-columbus-buildings-this-year/","lat":39.99632,"lon":-83.02578,"geo":"address"},{"date":"2024-05-31","time":"","name":"Dollar General","address":"3150 Hilliard Rome Road","area":"West Side","kind":"retail","cause":"unknown","note":"","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/has-there-been-a-high-number-of-car-crashes-into-columbus-buildings-this-year/","lat":40.00107,"lon":-83.15349,"geo":"address"},{"date":"2024-05-06","time":"","name":"Zen Yoga","address":"3242 N. High St","area":"Clintonville","kind":"retail","cause":"unknown","note":"","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/has-there-been-a-high-number-of-car-crashes-into-columbus-buildings-this-year/","lat":40.02833,"lon":-83.01481,"geo":"address"},{"date":"2024-04-23","time":"","name":"Westerville Golf Center","address":"450 W. Schrock Rd","area":"Westerville","kind":"other","cause":"unknown","note":"","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/has-there-been-a-high-number-of-car-crashes-into-columbus-buildings-this-year/","lat":40.11077,"lon":-82.94833,"geo":"address"},{"date":"2024-04-09","time":"","name":"Restaurant Equippers","address":"635 W. Broad St","area":"Franklinton","kind":"retail","cause":"unknown","note":"","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/has-there-been-a-high-number-of-car-crashes-into-columbus-buildings-this-year/","lat":39.96005,"lon":-83.01753,"geo":"address"},{"date":"2024-04-08","time":"","name":"Fox in the Snow Cafe","address":"","area":"Columbus","kind":"restaurant","cause":"unknown","note":"Listed by NBC4 alongside the Easton Town Center sign as the crashes that got Columbus talking.","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/has-there-been-a-high-number-of-car-crashes-into-columbus-buildings-this-year/","lat":39.98412,"lon":-82.99934,"geo":"name"},{"date":"2023-01-15","time":"","name":"Hoggy's BBQ","address":"830 Bethel Rd","area":"Northwest","kind":"restaurant","cause":"drunk","note":"First time. Drunk driver, front entrance, closed several weeks.","source":"614NOW","url":"https://614now.com/2026/food-drink/it-happened-again-car-crashes-into-same-columbus-restaurant-for-the-second-time","lat":40.06362,"lon":-83.04102,"geo":"address"},{"date":"2022-11-03","time":"","name":"Three buildings in one night","address":"","area":"Columbus","kind":"other","cause":"unknown","note":"Three separate crashes, same night, three people injured. Still the record.","source":"Wikipedia","url":"https://en.wikipedia.org/wiki/Carikaze","geo":"none"}]</script>
 <script id="geo" type="application/json">{"county":[[-83.2607,40.003],[-83.2461,39.9876],[-83.2496,39.9726],[-83.2256,39.9327],[-83.252,39.9174],[-83.2437,39.8125],[-82.8243,39.7949],[-82.8215,39.824],[-82.8024,39.823],[-82.7943,39.9108],[-82.8131,39.9117],[-82.8108,39.9411],[-82.7824,39.9397],[-82.7794,39.9764],[-82.7736,39.9761],[-82.7618,40.1259],[-83.1698,40.1428],[-83.1701,40.107],[-83.2066,40.1077],[-83.212,40.0475],[-83.2551,40.0483],[-83.2515,40.0082],[-83.2607,40.003]],"city":[[-83.2102,40.0692],[-83.2025,40.0638],[-83.1831,40.0644],[-83.1825,40.0602],[-83.1759,40.0593],[-83.1786,40.0541],[-83.1714,40.0537],[-83.1539,40.0583],[-83.1563,40.0689],[-83.1458,40.0663],[-83.1334,40.07],[-83.1293,40.0548],[-83.1214,40.0574],[-83.1215,40.0522],[-83.1107,40.0537],[-83.1125,40.0662],[-83.1168,40.0666],[-83.108,40.067],[-83.0973,40.0508],[-83.0994,40.0365],[-83.0954,40.0284],[-83.1025,40.0253],[-83.0986,40.0222],[-83.1112,40.0262],[-83.1105,40.0306],[-83.0988,40.0324],[-83.1106,40.0308],[-83.1112,40.034],[-83.1204,40.0286],[-83.1118,40.0211],[-83.1202,40.0199],[-83.1202,40.0113],[-83.154,40.0206],[-83.1585,40.0179],[-83.1473,40.0101],[-83.1539,40.0055],[-83.1537,40.0089],[-83.1597,40.0091],[-83.1634,40.0041],[-83.1661,40.0156],[-83.1597,40.0189],[-83.1738,40.0178],[-83.1753,40.011],[-83.1836,40.0141],[-83.1715,40.0037],[-83.1703,39.9894],[-83.164,39.9894],[-83.1677,39.9831],[-83.1597,39.9825],[-83.1612,39.9773],[-83.1742,39.9752],[-83.166,39.9726],[-83.1724,39.9721],[-83.1662,39.9707],[-83.1733,39.9668],[-83.1719,39.9564],[-83.1608,39.9509],[-83.1709,39.9503],[-83.1729,39.9446],[-83.1575,39.9354],[-83.159,39.9319],[-83.1529,39.9316],[-83.1698,39.9321],[-83.1624,39.9255],[-83.1707,39.9283],[-83.1702,39.9229],[-83.1784,39.9256],[-83.178,39.922],[-83.1629,39.9194],[-83.1628,39.9232],[-83.153,39.9241],[-83.1525,39.9121],[-83.1454,39.9121],[-83.1564,39.9115],[-83.1567,39.9058],[-83.1438,39.9032],[-83.1538,39.8935],[-83.1547,39.8827],[-83.1403,39.8837],[-83.1401,39.8891],[-83.1199,39.8902],[-83.1195,39.8996],[-83.1075,39.8983],[-83.1131,39.9021],[-83.1095,39.9099],[-83.102,39.9021],[-83.0946,39.9071],[-83.1027,39.91],[-83.0893,39.9069],[-83.085,39.913],[-83.0903,39.9156],[-83.0825,39.9183],[-83.0758,39.9166],[-83.0817,39.9137],[-83.0778,39.9111],[-83.0806,39.9079],[-83.0719,39.908],[-83.0721,39.9037],[-83.0696,39.9098],[-83.0628,39.9079],[-83.0652,39.9024],[-83.0457,39.8965],[-83.043,39.9068],[-83.0368,39.9058],[-83.0389,39.9025],[-83.0354,39.9015],[-83.0444,39.9002],[-83.0424,39.8948],[-83.035,39.8968],[-83.0324,39.9035],[-83.0253,39.9024],[-83.0305,39.8998],[-83.0264,39.8985],[-83.0274,39.8863],[-83.0178,39.881],[-83.0247,39.8727],[-83.0232,39.8622],[-83.0166,39.8582],[-83.0193,39.847],[-83.0084,39.845],[-83.009,39.8345],[-82.9998,39.8341],[-83.0011,39.8243],[-83.0326,39.8217],[-83.0315,39.8095],[-82.9957,39.8104],[-82.9989,39.8183],[-82.9844,39.8175],[-82.9751,39.8108],[-82.9638,39.8152],[-82.9655,39.8109],[-82.959,39.8231],[-82.9547,39.8229],[-82.9578,39.8252],[-82.9394,39.8232],[-82.9331,39.8161],[-82.9293,39.8227],[-82.9328,39.8232],[-82.92,39.8274],[-82.9352,39.8268],[-82.9363,39.8441],[-82.9543,39.8385],[-82.9558,39.8457],[-82.9675,39.8462],[-82.9696,39.8319],[-82.9601,39.833],[-82.9654,39.827],[-82.973,39.8274],[-82.9685,39.8191],[-82.9739,39.8284],[-82.9864,39.8318],[-82.9801,39.8322],[-82.981,39.8557],[-82.9899,39.8562],[-82.9941,39.8622],[-82.9891,39.8631],[-82.9882,39.8732],[-83.0009,39.8734],[-83.0055,39.8681],[-83.0076,39.8768],[-83.0005,39.8797],[-82.9999,39.8751],[-82.9812,39.8737],[-82.9809,39.8784],[-82.9741,39.8803],[-82.9728,39.8733],[-82.9631,39.8729],[-82.9614,39.8902],[-82.9302,39.8887],[-82.9306,39.8835],[-82.9088,39.8761],[-82.8995,39.8779],[-82.8987,39.8879],[-82.8808,39.8884],[-82.8642,39.8839],[-82.8667,39.8793],[-82.8461,39.8701],[-82.8455,39.8769],[-82.8515,39.8755],[-82.8594,39.8821],[-82.8581,39.8891],[-82.8539,39.8891],[-82.8518,39.8826],[-82.8352,39.8843],[-82.8364,39.8703],[-82.8305,39.8672],[-82.8354,39.8675],[-82.8359,39.8621],[-82.8026,39.8601],[-82.809,39.8629],[-82.8084,39.8678],[-82.7984,39.8672],[-82.7972,39.88],[-82.8052,39.8783],[-82.8053,39.8969],[-82.8105,39.8971],[-82.8101,39.9017],[-82.799,39.9002],[-82.8041,39.9082],[-82.7873,39.9136],[-82.788,39.9256],[-82.797,39.9316],[-82.8299,39.9341],[-82.8301,39.9419],[-82.836,39.9425],[-82.8306,39.9435],[-82.8326,39.9567],[-82.8191,39.9573],[-82.8186,39.9632],[-82.8279,39.9637],[-82.8273,39.9709],[-82.8388,39.9777],[-82.8029,39.9774],[-82.8034,39.985],[-82.7727,39.9872],[-82.7768,39.987],[-82.7759,39.9983],[-82.7813,39.9986],[-82.7718,39.9984],[-82.7713,40.0045],[-82.7875,40.0021],[-82.7807,40.0094],[-82.7986,40.0083],[-82.7908,40.0063],[-82.7911,40.0016],[-82.7989,40.002],[-82.8015,39.9899],[-82.8103,39.9894],[-82.815,39.9914],[-82.8096,39.9934],[-82.8159,39.9952],[-82.8439,39.9871],[-82.8576,39.9867],[-82.8573,39.995],[-82.8687,39.9971],[-82.8732,40.0057],[-82.9013,40.0103],[-82.9301,39.9965],[-82.9107,40.0096],[-82.9109,40.0275],[-82.9063,40.0202],[-82.8999,40.0462],[-82.8884,40.0461],[-82.8886,40.0564],[-82.8269,40.0537],[-82.8267,40.0498],[-82.8264,40.0537],[-82.8104,40.0531],[-82.8432,40.0546],[-82.8386,40.0691],[-82.8423,40.0756],[-82.8316,40.0734],[-82.8348,40.08],[-82.844,40.0792],[-82.8456,40.0863],[-82.835,40.083],[-82.8353,40.0899],[-82.828,40.0868],[-82.8282,40.0809],[-82.8217,40.0842],[-82.8241,40.0879],[-82.8167,40.0907],[-82.8161,40.0981],[-82.822,40.0984],[-82.8209,40.1132],[-82.8299,40.1136],[-82.8311,40.1064],[-82.8349,40.1065],[-82.8345,40.1122],[-82.8389,40.1113],[-82.8344,40.1138],[-82.8399,40.1141],[-82.8378,40.1089],[-82.8456,40.1071],[-82.8451,40.1143],[-82.8545,40.1148],[-82.857,40.1097],[-82.8648,40.1174],[-82.8676,40.1105],[-82.8597,40.1102],[-82.8604,40.1006],[-82.8668,40.1019],[-82.8731,40.0958],[-82.8674,40.0956],[-82.8666,40.0861],[-82.89,40.0941],[-82.8953,40.0855],[-82.8922,40.0799],[-82.9194,40.0809],[-82.9338,40.0974],[-82.9255,40.097],[-82.928,40.1012],[-82.9495,40.104],[-82.9493,40.1077],[-82.9359,40.1032],[-82.9444,40.1106],[-82.966,40.1073],[-82.9746,40.1119],[-82.9708,40.1356],[-82.9558,40.151],[-82.9949,40.1572],[-82.9971,40.152],[-83.0059,40.1523],[-83.0056,40.1445],[-82.9998,40.1444],[-83.0055,40.1424],[-83.0051,40.1381],[-83.0068,40.1504],[-83.0113,40.1506],[-83.0113,40.146],[-83.0177,40.1463],[-83.0149,40.1399],[-83.0108,40.1434],[-83.0114,40.1366],[-83.0375,40.1374],[-83.0363,40.134],[-83.0409,40.1339],[-83.0412,40.1376],[-83.0574,40.1381],[-83.0561,40.132],[-83.0336,40.1332],[-83.0367,40.1261],[-83.0211,40.1269],[-83.0166,40.1227],[-83.0593,40.1219],[-83.0638,40.1383],[-83.0894,40.1392],[-83.0918,40.0937],[-83.1079,40.0945],[-83.114,40.0882],[-83.1081,40.0682],[-83.1133,40.0689],[-83.1136,40.0759],[-83.131,40.0764],[-83.1366,40.0814],[-83.1435,40.0792],[-83.1393,40.0683],[-83.1442,40.0679],[-83.1467,40.0736],[-83.1585,40.0738],[-83.1622,40.0721],[-83.1609,40.0626],[-83.1688,40.0699],[-83.1969,40.0666],[-83.198,40.0749],[-83.2102,40.0692]]}</script>
 <!-- DATA:END -->
 
@@ -524,12 +550,14 @@
     try { return el ? JSON.parse(el.textContent) : []; } catch(e){ return []; }
   })();
 
+  // The ladder measures days since a crash last made the news, which is the only
+  // thing this board can actually see.
   var CRASHCON = [
     {n:1, name:"IMPACT",            color:"#D2401E", why:"A crash is on the wire right now."},
     {n:2, name:"GLASS ON THE SIDEWALK", color:"#E2711D", why:"Within 48 hours. Somebody is still sweeping."},
-    {n:3, name:"NORMAL COLUMBUS",   color:"#F0B400", why:"Running at the usual pace."},
-    {n:4, name:"QUIET",             color:"#8FA31E", why:"Longer than usual without one. Enjoy it."},
-    {n:5, name:"SUSPICIOUSLY CALM", color:"#4C8577", why:"This does not last. Check your bollards."}
+    {n:3, name:"NORMAL COLUMBUS",   color:"#F0B400", why:"Running at the usual pace for coverage."},
+    {n:4, name:"QUIET",             color:"#8FA31E", why:"A while since one made the news. The crashes did not stop."},
+    {n:5, name:"SUSPICIOUSLY CALM", color:"#4C8577", why:"Nothing reported in weeks. Nobody believes that."}
   ];
 
   function parseIncident(inc){
@@ -562,10 +590,12 @@
     }
   }
 
-  // Thresholds run against the citywide cadence, not this log. Paul Meara
-  // counted 71 crashes in 2025 — about one every five days — and says that
-  // still undercounts. What this board has sourced is shown alongside it.
-  var CITYWIDE_GAP = 365 / 71;
+  // Columbus Division of Fire was dispatched to 279 vehicle-into-structure runs
+  // in 2023 and 313 in 2022 — one every 1.3 days. Media coverage catches a
+  // fraction of that, and this board only sees what got written up, so the two
+  // cadences are reported separately everywhere they appear.
+  var FIRE_RUNS_2023 = 279;
+  var CITYWIDE_GAP = 365 / FIRE_RUNS_2023;
 
   function crashconFor(days){
     var yearAgo = Date.now() - 365*86400000;
@@ -586,8 +616,8 @@
     document.getElementById("ccNum").textContent  = lv.n;
     document.getElementById("ccName").textContent = lv.name;
     document.getElementById("ccWhy").textContent = lv.why +
-      " Citywide, one lands every " + CITYWIDE_GAP.toFixed(1) + " days" +
-      (r.ourGap ? "; this board has sourced one every " + r.ourGap.toFixed(0) : "") + ".";
+      " Columbus Fire runs one every " + CITYWIDE_GAP.toFixed(1) + " days" +
+      (r.ourGap ? "; this board only hears about one every " + r.ourGap.toFixed(0) : "") + ".";
     var pips = document.getElementById("ccScale").children;
     for (var i = 0; i < pips.length; i++){
       pips[i].className = (i < (6 - lv.n)) ? "on" : "";
@@ -638,7 +668,7 @@
   // ---- per-month chart ----
   function renderChart(){
     var svg = document.getElementById("chart");
-    var MONTHS = 24, now = new Date();
+    var MONTHS = 36, now = new Date();
     var buckets = [], index = {};
     for (var k = MONTHS - 1; k >= 0; k--){
       var d = new Date(now.getFullYear(), now.getMonth() - k, 1);
@@ -825,10 +855,117 @@
     }
   }
 
+  // ---- how likely is the next one ----
+  // Crashes arrive independently at a roughly steady rate, which is the textbook
+  // case for a Poisson process: P(at least one in n days) = 1 - e^(-n/gap).
+  function odds(days, gap){
+    return 1 - Math.exp(-days / gap);
+  }
+
+  function renderOdds(streakLine){
+    document.getElementById("totalLogged").textContent = ordered.length;
+    var yearAgo = Date.now() - 365*86400000;
+    var logged = ordered.filter(function(i){ return parseIncident(i) >= yearAgo; }).length;
+    var ourGap = logged > 1 ? 365 / logged : CITYWIDE_GAP;
+    var pct = odds(7, CITYWIDE_GAP) * 100;
+    document.getElementById("odds").innerHTML =
+      "Columbus Fire answered <b>" + FIRE_RUNS_2023 + "</b> vehicle-into-structure runs in 2023 " +
+      "and <b>313</b> in 2022 &mdash; one every " + CITYWIDE_GAP.toFixed(1) + " days. At that rate the odds " +
+      "one happens somewhere in the city this week are <b>" + pct.toFixed(1) + "%</b>, which is " +
+      "arithmetic for <em>yes</em>. The odds one of them makes the news, going by this board\u2019s last " +
+      "year (" + logged + " sourced), are <b>" + Math.round(odds(7, ourGap) * 100) + "%</b>." + (streakLine || "");
+  }
+
+  // ---- quiet stretches ----
+  // Only measured from 2025 on: coverage before that is too patchy for the gaps
+  // to mean anything.
+  var STREAK_FROM = new Date("2025-01-01T00:00:00");
+
+  function streaks(){
+    var dates = ordered.filter(function(i){ return parseIncident(i) >= STREAK_FROM; })
+                       .map(parseIncident).sort(function(a, b){ return a - b; });
+    var gaps = [];
+    for (var i = 1; i < dates.length; i++){
+      gaps.push({days: Math.round((dates[i] - dates[i-1]) / 86400000), end: dates[i]});
+    }
+    return gaps;
+  }
+
+  function ordinal(n){
+    var tens = n % 100, ones = n % 10;
+    var suffix = (tens >= 11 && tens <= 13) ? "th"
+               : ones === 1 ? "st" : ones === 2 ? "nd" : ones === 3 ? "rd" : "th";
+    return n + suffix;
+  }
+
+  function renderStreak(days){
+    var gaps = streaks();
+    if (!gaps.length) return "";
+    var longest = gaps.reduce(function(a, b){ return b.days > a.days ? b : a; });
+    document.getElementById("longest").textContent = longest.days + " days";
+    return " The current stretch ranks " +
+           ordinal(gaps.filter(function(g){ return g.days >= days; }).length + 1) +
+           " since 2025.";
+  }
+
+  // ---- hour of day ----
+  function renderHours(){
+    var svg = document.getElementById("hours");
+    var timed = ordered.filter(function(i){ return /^\d{2}:\d{2}$/.test(i.time || ""); });
+    var counts = new Array(24).fill(0);
+    timed.forEach(function(i){ counts[+i.time.slice(0, 2)]++; });
+
+    var W = 720, H = 190, padL = 26, padR = 8, padT = 12, base = H - 40;
+    var max = Math.max.apply(null, counts) || 1;
+    var step = (W - padL - padR) / 24, bw = step * 0.66;
+    var out = [];
+
+    for (var g = 0; g <= max; g++){
+      var y = base - (g / max) * (base - padT);
+      out.push('<line x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (W - padR) +
+               '" y2="' + y.toFixed(1) + '" stroke="var(--line)" stroke-width="1"/>');
+      out.push('<text x="' + (padL - 7) + '" y="' + (y + 4).toFixed(1) +
+               '" text-anchor="end" font-size="12.5" fill="var(--muted)" ' +
+               'font-family="JetBrains Mono, monospace">' + g + "</text>");
+    }
+
+    counts.forEach(function(n, hour){
+      var x = padL + hour * step + (step - bw) / 2;
+      var h = n === 0 ? 0 : Math.max(3, (n / max) * (base - padT));
+      if (h > 0){
+        var night = hour < 6 || hour >= 22;
+        out.push('<rect x="' + x.toFixed(1) + '" y="' + (base - h).toFixed(1) +
+                 '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) +
+                 '" rx="2" fill="' + (night ? "var(--hazard-deep)" : "var(--alert)") +
+                 '"><title>' + hour + ":00 — " + n +
+                 (n === 1 ? " crash" : " crashes") + "</title></rect>");
+      }
+      if (hour % 3 === 0){
+        var label = hour === 0 ? "12a" : hour === 12 ? "12p" :
+                    hour < 12 ? hour + "a" : (hour - 12) + "p";
+        out.push('<text x="' + (x + bw/2).toFixed(1) + '" y="' + (base + 24) +
+                 '" text-anchor="middle" font-size="12.5" fill="var(--muted)" ' +
+                 'font-family="JetBrains Mono, monospace">' + label + "</text>");
+      }
+    });
+
+    out.push('<line x1="' + padL + '" y1="' + base + '" x2="' + (W - padR) +
+             '" y2="' + base + '" stroke="var(--ink)" stroke-width="2"/>');
+    svg.innerHTML = out.join("");
+
+    var peak = counts.indexOf(max);
+    document.getElementById("hoursNote").textContent =
+      timed.length + " of " + ordered.length + " incidents state a time. Busiest hour so far: " +
+      (peak % 12 || 12) + (peak < 12 ? " a.m." : " p.m.") + " " +
+      "Day of week is not charted — most entries carry the date the story ran, not the date of the crash.";
+  }
+
   renderLog();
   renderChart();
   renderMap();
   renderBoards();
+  renderHours();
+  renderOdds(renderStreak(Math.floor((Date.now() - latest.getTime()) / 86400000)));
   tick();
   setInterval(tick, 1000);
 </script>

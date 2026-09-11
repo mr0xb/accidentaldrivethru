@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How this is counted</title>
+<meta name="description" content="Where Accidental Drive-Thru's numbers come from, what they miss, and why nobody knows the real total.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%97%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://accidentaldrivethru.com/about.html">
+<meta property="og:title" content="How this is counted">
+<meta property="og:image" content="https://accidentaldrivethru.com/assets/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+:root{
+    --ground:#E4DFD2;
+    --panel:#FBF8F0;
+    --panel-2:#EFEADC;
+    --ink:#1A1813;
+    --muted:#6E6A5C;
+    --line:#C9C2AE;
+    --hazard:#F0B400;
+    --hazard-deep:#B07E00;
+    --alert:#D2401E;
+    --digit-bg:#1A1813;
+    --digit-ink:#F0B400;
+    --digit-seam:rgba(0,0,0,.55);
+    --shadow:0 1px 0 rgba(0,0,0,.06), 0 12px 28px -18px rgba(26,24,19,.55);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E0F0D;
+      --panel:#181A16;
+      --panel-2:#20231E;
+      --ink:#F2EEE0;
+      --muted:#918C7C;
+      --line:#33362E;
+      --hazard:#FFC61A;
+      --hazard-deep:#8A6400;
+      --alert:#FF5C33;
+      --digit-bg:#000000;
+      --digit-ink:#FFC61A;
+      --digit-seam:rgba(255,255,255,.10);
+      --shadow:0 1px 0 rgba(255,255,255,.04), 0 16px 34px -20px #000;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0E0F0D;
+    --panel:#181A16;
+    --panel-2:#20231E;
+    --ink:#F2EEE0;
+    --muted:#918C7C;
+    --line:#33362E;
+    --hazard:#FFC61A;
+    --hazard-deep:#8A6400;
+    --alert:#FF5C33;
+    --digit-bg:#000000;
+    --digit-ink:#FFC61A;
+    --digit-seam:rgba(255,255,255,.10);
+    --shadow:0 1px 0 rgba(255,255,255,.04), 0 16px 34px -20px #000;
+  }
+
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .tape{
+    height:14px;
+    background:repeating-linear-gradient(-45deg,var(--hazard) 0 18px,var(--ink) 18px 36px);
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 20px 64px;display:flex;flex-direction:column;gap:26px;}
+
+  header.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;}
+  .eyebrow{
+    font-size:14px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--muted);
+  }
+  .site{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;color:var(--muted);}
+  .wordmark{
+    font-family:"Bungee",Impact,sans-serif;
+    font-size:clamp(24px,4.4vw,40px);
+    line-height:1;letter-spacing:-.01em;
+    background:linear-gradient(180deg,var(--ink) 58%,var(--hazard-deep) 58%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    padding-bottom:2px;
+  }
+  .site b{color:var(--ink);font-weight:600;}
+  .wrap{max-width:720px;}
+  h1{
+    font-family:"Bungee",Impact,sans-serif;font-weight:400;
+    font-size:clamp(26px,5vw,40px);line-height:1.05;margin:0;text-wrap:balance;
+  }
+  h2{
+    font-family:"Bungee",Impact,sans-serif;font-weight:400;font-size:18px;
+    margin:14px 0 0;letter-spacing:.01em;
+  }
+  p{margin:0;}
+  a{color:var(--alert);text-decoration-thickness:1px;text-underline-offset:2px;}
+  a:hover{color:var(--ink);}
+  a:focus-visible{outline:2px solid var(--hazard);outline-offset:2px;}
+  .lede{font-size:18px;color:var(--muted);text-wrap:balance;}
+  .back{font-size:14px;color:var(--muted);}
+  dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:15px;}
+  dt{color:var(--muted);white-space:nowrap;}
+  dd{margin:0;}
+  .box{
+    border:2px solid var(--ink);border-radius:4px;background:var(--panel);
+    padding:16px 18px;display:flex;flex-direction:column;gap:10px;
+  }
+  .caveat{border-left:3px solid var(--alert);background:var(--panel-2);
+    padding:12px 14px;border-radius:0 3px 3px 0;font-size:15px;}
+  ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px;}
+  footer{border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="tape"></div>
+<div class="wrap">
+
+  <p class="back"><a href="/">&larr; back to the board</a></p>
+
+  <h1>How this is counted</h1>
+  <p class="lede">Short version: nobody knows how many cars hit buildings in Columbus.
+  Not this site, not the police, not the guy who has tracked it since 2022. Here is
+  what this board actually does and does not know.</p>
+
+  <h2>Where the incidents come from</h2>
+  <p>Every row in the log links to the story it came from. Three ways they get there:</p>
+  <div class="box">
+    <dl>
+      <dt>Daily feed</dt>
+      <dd>614NOW publishes a category feed for exactly this phenomenon. A job checks it
+          each morning and appends anything new.</dd>
+      <dt>Archive walk</dt>
+      <dd>That feed only exposes the ten most recent posts, so a separate pass reads the
+          full category archive and pulls the history out of the articles themselves.</dd>
+      <dt>By hand</dt>
+      <dd>Incidents from NBC4, ABC6 and Columbus Underground, entered with the details
+          the reporting states &mdash; including a 2024 NBC4 roundup that listed six
+          crashes with addresses in one go.</dd>
+    </dl>
+  </div>
+
+  <h2>What the machine reads, and what it guesses</h2>
+  <p>The scraper reads English prose, not a database. It pulls a street address, a
+  time of day and a neighborhood out of the article text when they are stated. When
+  an article says "on April 30," that is the crash date. When it does not, the row
+  falls back to the date the story ran &mdash; which is usually a day or two late.</p>
+  <div class="caveat">
+    <b>This is why there is no day-of-week chart.</b> Roughly half the entries carry a
+    publish date rather than a crash date, and 614NOW tends to publish on Mondays.
+    A weekday chart would mostly measure their editorial calendar. Hour-of-day is
+    charted because those times are quoted in the articles, not inferred.
+  </div>
+
+  <h2>Why the totals disagree</h2>
+  <p>The best count does not come from the news at all. Columbus Division of Fire
+  tracks what it gets dispatched to, and Battalion Chief Jeffrey Geitter gave NBC4 the
+  numbers: <b>313</b> vehicle-into-structure runs in 2022, <b>279</b> in 2023, and 102
+  through June 1 of 2024. That is a crash about every 1.3 days &mdash; and by that data
+  the trend is going <em>down</em>, not up. Through June 1, the department ran 132 of
+  them in 2022, 115 in 2023 and 102 in 2024.</p>
+  <p>Everything else is a fraction of that. Paul Meara tracked 71 in 2025 as
+  <a href="https://www.instagram.com/cbuscarikaze/" target="_blank" rel="noopener">@cbuscarikaze</a>;
+  Columbus police documented 67 through June 2025. This board has 60. Fire sees every call. Reporters see the
+  photogenic ones. So the counter on the front page is measuring how long since a crash
+  <em>made the news</em> &mdash; roughly one per 1.3 days keeps happening either way.</p>
+  <p>The counter runs from the most recent crash <em>this board could source</em>.
+  Columbus has very likely beaten it since you loaded the page.</p>
+
+  <h2>The math</h2>
+  <ul>
+    <li><b>Crashcon</b> measures days since a crash last made the news, which is the
+        only thing this board can see. The fire-run cadence is printed beside it for
+        contrast.</li>
+    <li><b>The weekly odds</b> treat crashes as a Poisson process: at one every 1.3 days,
+        the chance of at least one somewhere in Columbus in the next seven is
+        1 &minus; e<sup>&minus;7/1.3</sup>, about 99.5%. The interesting number is the
+        second one &mdash; the odds any of them gets written up.</li>
+    <li><b>Quiet stretches</b> are only measured from January 2025 on. Coverage before
+        that is too patchy for a gap to mean anything.</li>
+    <li><b>Implied odds</b> on what gets hit next are just the historical mix of venue
+        types. There is no market. Please do not bet on this.</li>
+  </ul>
+
+  <h2>The map</h2>
+  <p>Addresses are geocoded through OpenStreetMap's Nominatim and checked against a
+  bounding box around Franklin County, because "830 Bethel Rd" exists in other Ohio
+  towns too. A filled dot was pinned to a street address; a hollow dot was pinned to a
+  neighborhood and is approximate. Incidents too vague to place are counted under the
+  map rather than dropped.</p>
+
+  <h2>Corrections</h2>
+  <p>If a row is wrong &mdash; wrong date, wrong business, wrong street, or your building
+  is on here and it should not be &mdash; say so and it gets fixed. The underlying data is
+  a single JSON file, so corrections are cheap.</p>
+
+  <footer>
+    Incident reporting by <a href="https://614now.com/" target="_blank" rel="noopener">614NOW</a>,
+    <a href="https://columbusunderground.com/" target="_blank" rel="noopener">Columbus Underground</a>,
+    NBC4 and ABC6. Tracking credit to
+    <a href="https://www.instagram.com/cbuscarikaze/" target="_blank" rel="noopener">@cbuscarikaze</a>.
+    Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>
+    contributors, ODbL.<br>
+    <a href="/">accidentaldrivethru.com</a>
+  </footer>
+</div>
+</body>
+</html>

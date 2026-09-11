@@ -87,8 +87,8 @@ def main():
     if latest.get("area"):
         d.text((tx, top + 130), latest["area"][:26], font=small, fill=MUTED)
 
-    d.text((64, 476), f"{len(incidents)} logged here · 71 counted citywide in 2025 · "
-                      f"one lands every 5 days", font=face("body", 24), fill=MUTED)
+    d.text((64, 476), f"{len(incidents)} logged here · Columbus Fire answers one "
+                      f"every 1.3 days", font=face("body", 24), fill=MUTED)
     # same ladder the site's Crashcon bar uses
     level, name, color = ((1, "IMPACT", ALERT)                  if days < 1  else
                           (2, "GLASS ON THE SIDEWALK", "#E2711D") if days < 2  else
