@@ -14,6 +14,13 @@ GEO  = ROOT / "data" / "geo.json"
 UA   = "accidentaldrivethru.com incident map (+https://accidentaldrivethru.com)"
 API  = "https://nominatim.openstreetmap.org/search?"
 
+# Greater Columbus. "830 Bethel Rd" exists in other Ohio towns too, so every
+# lookup is boxed and every result is re-checked against these bounds.
+WEST, EAST, SOUTH, NORTH = -83.45, -82.55, 39.70, 40.35
+
+def in_columbus(lat, lon):
+    return SOUTH <= lat <= NORTH and WEST <= lon <= EAST
+
 def get(params):
     url = API + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
@@ -78,12 +85,13 @@ def main():
             inc["geo"] = "none"
             continue
         try:
-            hits = get({"q": q, "format": "json", "limit": 1})
+            hits = get({"q": q, "format": "json", "limit": 1, "countrycodes": "us",
+                        "viewbox": f"{WEST},{NORTH},{EAST},{SOUTH}", "bounded": 1})
         except Exception as e:
             print(f"lookup failed for {q}: {e}", file=sys.stderr)
             continue
         looked_up += 1
-        if hits:
+        if hits and in_columbus(float(hits[0]["lat"]), float(hits[0]["lon"])):
             inc["lat"] = round(float(hits[0]["lat"]), 5)
             inc["lon"] = round(float(hits[0]["lon"]), 5)
             inc["geo"] = precision

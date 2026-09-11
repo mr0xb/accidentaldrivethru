@@ -1,0 +1,40 @@
+name: Backfill archive
+
+# The daily job only sees the ten posts in the RSS feed. This walks the whole
+# 614NOW category archive and is meant to be run by hand, after a fresh source
+# is added or when the extractor changes.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Walk the archive
+        run: python3 scripts/backfill.py
+
+      - name: Geocode anything new
+        run: python3 scripts/geocode.py
+
+      - name: Rebuild
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 scripts/build.py
+          python3 scripts/make_og.py
+
+      - name: Commit
+        run: |
+          if git diff --quiet; then
+            echo "nothing new in the archive"
+            exit 0
+          fi
+          git config user.name "incident bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/incidents.json data/geo.json index.html assets/og.png
+          git commit -m "Backfill from archive ($(date -u +%Y-%m-%d))"
+          git push
