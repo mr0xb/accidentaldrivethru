@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Columbus, Ohio's running count of days since a car crashed into a building. It has not been long.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%97%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://accidentaldrivethru.com/">
+<meta property="og:title" content="Accidental Drive-Thru">
+<meta property="og:description" content="Columbus, Ohio's running count of days since a car crashed into a building. It has not been long.">
+<meta name="twitter:card" content="summary_large_image">
+<title>Accidental Drive-Thru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Barlow+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --ground:#E4DFD2;
+    --panel:#FBF8F0;
+    --panel-2:#EFEADC;
+    --ink:#1A1813;
+    --muted:#6E6A5C;
+    --line:#C9C2AE;
+    --hazard:#F0B400;
+    --hazard-deep:#B07E00;
+    --alert:#D2401E;
+    --digit-bg:#1A1813;
+    --digit-ink:#F0B400;
+    --digit-seam:rgba(0,0,0,.55);
+    --shadow:0 1px 0 rgba(0,0,0,.06), 0 12px 28px -18px rgba(26,24,19,.55);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E0F0D;
+      --panel:#181A16;
+      --panel-2:#20231E;
+      --ink:#F2EEE0;
+      --muted:#918C7C;
+      --line:#33362E;
+      --hazard:#FFC61A;
+      --hazard-deep:#8A6400;
+      --alert:#FF5C33;
+      --digit-bg:#000000;
+      --digit-ink:#FFC61A;
+      --digit-seam:rgba(255,255,255,.10);
+      --shadow:0 1px 0 rgba(255,255,255,.04), 0 16px 34px -20px #000;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0E0F0D;
+    --panel:#181A16;
+    --panel-2:#20231E;
+    --ink:#F2EEE0;
+    --muted:#918C7C;
+    --line:#33362E;
+    --hazard:#FFC61A;
+    --hazard-deep:#8A6400;
+    --alert:#FF5C33;
+    --digit-bg:#000000;
+    --digit-ink:#FFC61A;
+    --digit-seam:rgba(255,255,255,.10);
+    --shadow:0 1px 0 rgba(255,255,255,.04), 0 16px 34px -20px #000;
+  }
+
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Barlow Condensed","Helvetica Neue",Arial,sans-serif;
+    font-size:17px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  .tape{
+    height:14px;
+    background:repeating-linear-gradient(-45deg,var(--hazard) 0 18px,var(--ink) 18px 36px);
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 20px 64px;display:flex;flex-direction:column;gap:26px;}
+
+  header.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;}
+  .eyebrow{
+    font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--muted);
+  }
+  .site{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);}
+  .wordmark{
+    font-family:"Bungee",Impact,sans-serif;
+    font-size:clamp(24px,4.4vw,40px);
+    line-height:1;letter-spacing:-.01em;
+    background:linear-gradient(180deg,var(--ink) 58%,var(--hazard-deep) 58%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    padding-bottom:2px;
+  }
+  .site b{color:var(--ink);font-weight:600;}
+
+  /* ---- the board ---- */
+  .board{
+    background:var(--panel);
+    border:2px solid var(--ink);
+    border-radius:4px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .board-head{
+    display:flex;align-items:center;gap:14px;
+    padding:10px 18px;
+    background:var(--hazard);
+    color:#1A1813;
+    border-bottom:2px solid var(--ink);
+  }
+  .board-head .bolt{font-family:"Bungee",Impact,sans-serif;font-size:15px;letter-spacing:.04em;}
+  .board-head .spacer{flex:1;}
+  .board-head .status{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;
+    background:#1A1813;color:var(--hazard);padding:3px 9px;border-radius:2px;
+  }
+  .board-body{
+    display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+  }
+  @media (max-width:820px){.board-body{grid-template-columns:1fr;}}
+  .count-col{padding:30px 26px 26px;display:flex;flex-direction:column;gap:18px;}
+  .headline{
+    font-family:"Bungee",Impact,sans-serif;
+    font-size:clamp(22px,3.4vw,32px);
+    line-height:1.06;
+    text-wrap:balance;
+    margin:0;
+  }
+  .headline em{font-style:normal;color:var(--alert);}
+
+  .digits{display:flex;gap:8px;align-items:stretch;}
+  .digit{
+    position:relative;
+    background:var(--digit-bg);
+    color:var(--digit-ink);
+    font-family:"Bungee",Impact,sans-serif;
+    font-size:clamp(52px,11vw,104px);
+    line-height:1;
+    padding:.14em .11em .19em;
+    border-radius:5px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+    font-variant-numeric:tabular-nums;
+  }
+  .digit::after{
+    content:"";position:absolute;left:0;right:0;top:50%;height:2px;
+    background:var(--digit-seam);
+  }
+  .digit.flip{animation:flip .28s ease-out;}
+  @keyframes flip{
+    0%{transform:perspective(300px) rotateX(0deg);}
+    45%{transform:perspective(300px) rotateX(-52deg);}
+    100%{transform:perspective(300px) rotateX(0deg);}
+  }
+  .clock{
+    font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+    font-size:15px;color:var(--muted);
+    display:flex;flex-wrap:wrap;gap:6px 14px;
+  }
+  .clock b{color:var(--ink);font-weight:600;}
+
+  .record{
+    display:flex;flex-wrap:wrap;gap:10px 26px;
+    padding-top:16px;border-top:1px dashed var(--line);
+  }
+  .record div{display:flex;flex-direction:column;gap:2px;}
+  .record span{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .record strong{font-family:"Bungee",Impact,sans-serif;font-size:20px;font-weight:400;}
+
+  .art-col{
+    border-left:2px solid var(--ink);
+    background:var(--panel-2);
+    display:flex;align-items:center;justify-content:center;
+    padding:14px;
+  }
+  @media (max-width:820px){.art-col{border-left:none;border-top:2px solid var(--ink);}}
+  .art-col svg{width:100%;height:auto;max-width:520px;display:block;}
+
+  .board-foot{
+    display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+    padding:14px 18px;border-top:2px solid var(--ink);background:var(--panel);
+  }
+
+  /* ---- stats ---- */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden;}
+  @media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  .stat{background:var(--panel);padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;}
+  .stat span{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .stat strong{font-size:26px;font-weight:700;line-height:1.1;}
+  .stat small{font-size:13px;color:var(--muted);}
+
+  /* ---- log ---- */
+  section h2{
+    font-family:"Bungee",Impact,sans-serif;font-size:17px;font-weight:400;margin:0 0 10px;
+    letter-spacing:.02em;
+  }
+  .log-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--panel);}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-family:"IBM Plex Mono",monospace;font-size:13px;}
+  th{
+    text-align:left;padding:9px 14px;background:var(--panel-2);color:var(--muted);
+    font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    border-bottom:1px solid var(--line);white-space:nowrap;
+  }
+  td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td.date{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums;}
+  td.note{font-family:"Barlow Condensed",sans-serif;font-size:15px;}
+  .pill{
+    display:inline-block;padding:1px 7px 2px;border-radius:999px;font-size:11px;font-weight:600;
+    letter-spacing:.06em;text-transform:uppercase;
+  }
+  .pill.pedal{background:color-mix(in srgb,var(--alert) 18%,transparent);color:var(--alert);}
+  .pill.reverse{background:color-mix(in srgb,var(--hazard) 26%,transparent);color:var(--hazard-deep);}
+  .pill.medical{background:color-mix(in srgb,var(--muted) 22%,transparent);color:var(--muted);}
+  :root[data-theme="dark"] .pill.reverse,
+  :root:not([data-theme="light"]) .pill.reverse{color:var(--hazard);}
+
+  .log-note{margin:-4px 0 10px;font-size:14px;color:var(--muted);}
+  a{color:var(--alert);text-decoration-thickness:1px;text-underline-offset:2px;}
+  a:hover{color:var(--ink);}
+  a:focus-visible{outline:2px solid var(--hazard);outline-offset:2px;}
+  td a{font-size:12px;white-space:nowrap;}
+  footer.fine{
+    font-size:13px;color:var(--muted);line-height:1.6;
+    border-top:1px solid var(--line);padding-top:16px;
+  }
+  footer.fine b{color:var(--ink);font-weight:600;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="tape"></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <div class="wordmark">Accidental Drive-Thru</div>
+      <div class="site">accidentaldrivethru.com &middot; Columbus, Ohio &middot; Franklin County tally</div>
+    </div>
+    <div class="site">Sourced from <b>police blotter</b>, <b>local news</b>, and <b>one very tired glazier</b></div>
+  </header>
+
+  <div class="board" id="board">
+    <div class="board-head">
+      <div class="bolt">CBUS SAFETY BOARD</div>
+      <div class="spacer"></div>
+      <div class="status" id="status">MONITORING</div>
+    </div>
+
+    <div class="board-body">
+      <div class="count-col">
+        <h1 class="headline">Days since a car crashed <em>into a building</em> in Columbus</h1>
+
+        <div class="digits" id="digits" aria-live="polite" aria-label="Days since last incident">
+          <div class="digit">0</div><div class="digit">0</div><div class="digit">0</div>
+        </div>
+
+        <div class="clock">
+          <span>plus <b id="hms">00:00:00</b></span>
+          <span>since <b id="lastStamp">&mdash;</b></span>
+        </div>
+
+        <div class="record">
+          <div><span>Logged in 2025</span><strong>71</strong></div>
+          <div><span>Since 2022</span><strong>180+</strong></div>
+          <div><span>Typical gap</span><strong>~5 days</strong></div>
+          <div><span>Bollards that would help</span><strong>Many</strong></div>
+        </div>
+      </div>
+
+      <div class="art-col">
+        <svg id="scene" viewBox="0 0 640 360" role="img" aria-label="Illustration: a sedan nose-first through a brick storefront wall, bricks and glass scattered">
+          <defs>
+            <linearGradient id="carPaint" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#E4E1D6"/>
+              <stop offset="1" stop-color="#A9A597"/>
+            </linearGradient>
+            <linearGradient id="glassG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#9FC6CE"/>
+              <stop offset="1" stop-color="#6E9BA6"/>
+            </linearGradient>
+          </defs>
+
+          <!-- wall -->
+          <rect x="398" y="30" width="242" height="292" fill="#9C5A44"/>
+          <g stroke="#7E4634" stroke-width="2" fill="none" opacity=".85">
+            <path d="M398 60h242M398 90h242M398 120h242M398 150h242M398 180h242M398 210h242M398 240h242M398 270h242M398 300h242"/>
+            <path d="M430 30v30M490 30v30M550 30v30M610 30v30M460 60v30M520 60v30M580 60v30M430 90v30M490 90v30M550 90v30M610 90v30M460 120v30M520 120v30M580 120v30M430 150v30M490 150v30M550 150v30M610 150v30M460 180v30M520 180v30M580 180v30M430 210v30M490 210v30M550 210v30M610 210v30M460 240v30M520 240v30M580 240v30M430 270v30M490 270v30M550 270v30M610 270v30"/>
+          </g>
+
+          <!-- sign on wall, hanging crooked -->
+          <g transform="rotate(-9 560 66)">
+            <rect x="500" y="46" width="120" height="40" fill="#F0B400" stroke="#1A1813" stroke-width="3"/>
+            <text x="560" y="73" text-anchor="middle" font-family="Bungee, Impact, sans-serif" font-size="20" fill="#1A1813">OPEN</text>
+          </g>
+
+          <!-- hole punched in wall -->
+          <path d="M392 150 L448 138 L470 176 L462 214 L488 250 L454 300 L396 322 L392 322 Z" fill="#2A1B16"/>
+          <!-- cracks -->
+          <g stroke="#5E3327" stroke-width="4" fill="none" stroke-linecap="round">
+            <path d="M448 138 L474 108 L470 84 L492 62"/>
+            <path d="M470 176 L512 168 L542 186 L580 178"/>
+            <path d="M488 250 L528 262 L556 246 L604 258"/>
+            <path d="M454 300 L490 312 L520 300"/>
+            <path d="M448 138 L482 128 L520 106"/>
+          </g>
+
+          <!-- dust puffs -->
+          <g fill="#C9C2AE" opacity=".55">
+            <circle cx="404" cy="132" r="20"/><circle cx="432" cy="112" r="14"/>
+            <circle cx="386" cy="112" r="11"/><circle cx="418" cy="300" r="18"/>
+            <circle cx="452" cy="316" r="12"/>
+          </g>
+
+          <!-- car body, nose crumpled into the wall -->
+          <path d="M62 296 L62 254 C62 242 70 236 86 234 L152 226 L198 188 C208 180 220 176 234 176 L300 176 C314 176 326 180 336 190 L370 224 L398 236 L380 246 L400 254 L378 262 L398 272 L376 280 L392 296 Z" fill="url(#carPaint)" stroke="#1A1813" stroke-width="4" stroke-linejoin="round"/>
+          <!-- windows -->
+          <path d="M212 192 L246 192 L246 224 L188 224 Z" fill="url(#glassG)" stroke="#1A1813" stroke-width="3"/>
+          <path d="M262 192 L302 192 L330 224 L262 224 Z" fill="url(#glassG)" stroke="#1A1813" stroke-width="3"/>
+          <!-- door line + handle -->
+          <g stroke="#1A1813" stroke-width="3" fill="none">
+            <path d="M252 226 L252 288"/>
+            <path d="M226 244 h22"/>
+          </g>
+          <!-- crumple creases -->
+          <g stroke="#1A1813" stroke-width="3" fill="none" opacity=".7">
+            <path d="M348 234 L372 250 M356 262 L378 268 M344 280 L368 286"/>
+          </g>
+          <!-- wheels -->
+          <g>
+            <circle cx="126" cy="296" r="28" fill="#1A1813"/>
+            <circle cx="126" cy="296" r="12" fill="#B8B3A3"/>
+            <circle cx="316" cy="296" r="28" fill="#1A1813"/>
+            <circle cx="316" cy="296" r="12" fill="#B8B3A3"/>
+          </g>
+          <!-- ground -->
+          <path d="M0 324 H640" stroke="#1A1813" stroke-width="5"/>
+          <!-- skid marks -->
+          <g stroke="#1A1813" stroke-width="6" opacity=".35" stroke-linecap="round">
+            <path d="M4 316 H108"/><path d="M28 330 H120"/>
+          </g>
+          <!-- debris -->
+          <g fill="#9C5A44" stroke="#1A1813" stroke-width="2">
+            <polygon points="340,306 366,300 362,318 336,320"/>
+            <polygon points="286,312 306,308 304,322 284,322"/>
+            <polygon points="196,316 214,312 212,322 194,322"/>
+          </g>
+          <g fill="#9FC6CE" stroke="#1A1813" stroke-width="2" opacity=".9">
+            <polygon points="380,196 404,186 396,206"/>
+            <polygon points="418,206 440,202 430,220"/>
+          </g>
+          <!-- lone surviving bollard, bent -->
+          <g transform="rotate(24 360 300)">
+            <rect x="352" y="252" width="16" height="70" rx="6" fill="#F0B400" stroke="#1A1813" stroke-width="3"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="board-foot">
+      <div class="foot-note">Counter runs from the most recent crash we could source. Columbus has very likely beaten this board since.</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span>The local term</span><strong>Carikaze</strong><small>Columbus coinage, tracked on Instagram as @cbuscarikaze</small></div>
+    <div class="stat"><span>Crashes logged, 2025</span><strong>71</strong><small>by journalist Paul Meara &mdash; and he says that undercounts it</small></div>
+    <div class="stat"><span>Police-documented</span><strong>67</strong><small>through June 2025 alone, per Columbus Division of Police</small></div>
+    <div class="stat"><span>Bollard spec</span><strong>ASTM F3016</strong><small>rated to stop 10&ndash;30 mph. Most storefronts have none</small></div>
+  </div>
+
+  <section>
+    <h2>Incident log &mdash; Columbus, 2026</h2>
+    <p class="log-note">Real, sourced incidents. Not a complete list &mdash; nobody has one.</p>
+    <div class="log-wrap">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Time</th><th>Target</th><th>Cause</th><th>What happened</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="date">Sep 1</td><td class="date">10:30</td><td>ECDC offices, E. Main St</td><td><span class="pill medical">unknown</span></td><td class="note">Straight through the front door. Nobody hurt.</td><td><a href="https://abc6onyourside.com/news/local/car-crashed-through-front-door-of-building-in-east-columbus-on-tuesday-morning-ecdc-development-company-main-street" target="_blank" rel="noopener">ABC6</a></td></tr>
+          <tr><td class="date">Aug 24</td><td class="date">&mdash;</td><td>Foxglove Hollow, 285 W. Center St</td><td><span class="pill medical">unknown</span></td><td class="note">Home decor shop posted the front window to Instagram.</td><td><a href="https://614now.com/2026/hot-topics/car-crashes-into-front-of-central-ohio-home-decor-store" target="_blank" rel="noopener">614NOW</a></td></tr>
+          <tr><td class="date">Aug 17</td><td class="date">&mdash;</td><td>Wild Goose Creative, 480 W. Town St</td><td><span class="pill medical">unknown</span></td><td class="note">&ldquo;Today we became part of a time-honored Columbus tradition.&rdquo;</td><td><a href="https://614now.com/2026/hot-topics/we-became-part-of-a-time-honored-columbus-tradition-car-crashes-into-columbus-arts-hub" target="_blank" rel="noopener">614NOW</a></td></tr>
+          <tr><td class="date">Jul 22</td><td class="date">&mdash;</td><td>Aardvark Wine &amp; Beer</td><td><span class="pill medical">unknown</span></td><td class="note">Shop filed it under &ldquo;run-in.&rdquo;</td><td><a href="https://614now.com/2026/hot-topics/columbus-wine-and-beer-shop-faces-property-damage-due-to-car-crash" target="_blank" rel="noopener">614NOW</a></td></tr>
+          <tr><td class="date">Jun 8</td><td class="date">&mdash;</td><td>Hoggy&rsquo;s BBQ, 830 Bethel Rd</td><td><span class="pill pedal">delivery</span></td><td class="note">Delivery driver hit it, backed up, hit it again. Killed the walk-in cooler. Second time since 2023.</td><td><a href="https://614now.com/2026/food-drink/it-happened-again-car-crashes-into-same-columbus-restaurant-for-the-second-time" target="_blank" rel="noopener">614NOW</a></td></tr>
+          <tr><td class="date">Apr 30</td><td class="date">&mdash;</td><td>Solis Mammography, 974 Bethel Rd</td><td><span class="pill medical">unknown</span></td><td class="note">Red crossover, into the building. Bethel Rd is having a year.</td><td><a href="https://614now.com/2026/hot-topics/car-crashes-into-columbus-mammogram-center" target="_blank" rel="noopener">614NOW</a></td></tr>
+          <tr><td class="date">Apr 2</td><td class="date">&mdash;</td><td>Chase Bank, 1600 Hilliard Rome Rd</td><td><span class="pill medical">unknown</span></td><td class="note">Hit the bank, finished in the bushes. No injuries.</td><td><a href="https://614now.com/2026/hot-topics/driver-crashes-into-west-columbus-bank-ends-up-in-bushes" target="_blank" rel="noopener">614NOW</a></td></tr>
+          <tr><td class="date">Mar 27</td><td class="date">16:30</td><td>Detached garage, Westgate</td><td><span class="pill pedal">hit &amp; run</span></td><td class="note">Stolen white Honda Accord. Driver got out and ran east.</td><td><a href="https://614now.com/2026/hot-topics/watch-car-crashes-into-garage-in-hilltop-neighborhood" target="_blank" rel="noopener">614NOW</a></td></tr>
+          <tr><td class="date">Feb 15</td><td class="date">04:00</td><td>Infinity Pharmacy</td><td><span class="pill medical">unknown</span></td><td class="note">Four in the morning, through the storefront.</td><td><a href="https://614now.com/2026/hot-topics/car-crashing-into-building/car-crashes-into-columbus-pharmacy" target="_blank" rel="noopener">614NOW</a></td></tr>
+          <tr><td class="date">Jan 23</td><td class="date">&mdash;</td><td>Mezcla, 1022 Summit St</td><td><span class="pill medical">unknown</span></td><td class="note">Restaurant closed afterward. One person injured.</td><td><a href="https://columbusunderground.com/mezcla-closes-after-car-crashes-into-building-ak1/" target="_blank" rel="noopener">Columbus Underground</a></td></tr>
+          <tr><td class="date">Jan 1</td><td class="date">19:55</td><td>Meister&rsquo;s Bar and Pizza, 1186 Chambers Rd</td><td><span class="pill reverse">parking</span></td><td class="note">Silver SUV, apparently trying to park. First of the year, eight hours before midnight.</td><td><a href="https://614now.com/2026/hot-topics/first-of-the-year-crash-crashes-into-columbus-pizza-spot-on-new-years-day" target="_blank" rel="noopener">614NOW</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="fine">
+    <b>How this works.</b> The counter runs from the most recent crash we could source, not from the most recent crash. Columbus almost certainly beat this board while you were reading it.<br>
+    <b>Credit where due.</b> Paul Meara has tracked these as <a href="https://www.instagram.com/cbuscarikaze/" target="_blank" rel="noopener">@cbuscarikaze</a> since 2022 and logged 71 in 2025 alone. Incident details from <a href="https://614now.com/" target="_blank" rel="noopener">614NOW</a>, <a href="https://columbusunderground.com/" target="_blank" rel="noopener">Columbus Underground</a>, ABC6 and NBC4.<br>
+    <b>Reminder.</b> A parking block is not a bollard. A planter is not a bollard. A bollard is not a bollard unless it is rated, anchored, and filled.<br>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;">accidentaldrivethru.com</span>
+  </footer>
+</div>
+
+<script>
+  // ---- the one line you edit ----
+  // Most recent sourced crash: ECDC offices, E. Main St, Sep 1 2026 (ABC6).
+  var FACTORY_INCIDENT = "2026-09-01T10:30:00";
+  var TYPICAL_GAP_DAYS = 5;
+
+  var digitsEl = document.getElementById("digits");
+  var hmsEl    = document.getElementById("hms");
+  var stampEl  = document.getElementById("lastStamp");
+  var statusEl = document.getElementById("status");
+
+  function lastIncident(){ return new Date(FACTORY_INCIDENT); }
+
+  var FMT = { month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", hour12:false };
+  function pad(n, w){ n = String(n); while(n.length < w) n = "0" + n; return n; }
+
+  function setDigits(days){
+    var text = pad(Math.min(days, 999), 3).split("");
+    var tiles = digitsEl.children;
+    for (var i = 0; i < 3; i++){
+      if (tiles[i].textContent !== text[i]){
+        tiles[i].textContent = text[i];
+        tiles[i].classList.remove("flip");
+        void tiles[i].offsetWidth;
+        tiles[i].classList.add("flip");
+      }
+    }
+  }
+
+  function tick(){
+    var last = lastIncident();
+    var ms   = Date.now() - last.getTime();
+    if (ms < 0) ms = 0;
+    var days = Math.floor(ms / 86400000);
+    var rem  = ms % 86400000;
+
+    setDigits(days);
+    hmsEl.textContent = pad(Math.floor(rem/3600000),2) + ":" +
+                        pad(Math.floor(rem/60000)%60,2) + ":" +
+                        pad(Math.floor(rem/1000)%60,2);
+    stampEl.textContent = last.toLocaleString(undefined, FMT);
+    if (days === 0)                        statusEl.textContent = "CLEANUP IN PROGRESS";
+    else if (days < 3)                     statusEl.textContent = "SHAKEN";
+    else if (days > TYPICAL_GAP_DAYS * 4)  statusEl.textContent = "SUSPICIOUSLY QUIET";
+    else if (days > TYPICAL_GAP_DAYS)      statusEl.textContent = "BEATING THE AVERAGE";
+    else                                   statusEl.textContent = "MONITORING";
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
+</body>
+</html>
