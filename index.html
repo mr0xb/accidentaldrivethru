@@ -9,11 +9,16 @@
 <meta property="og:url" content="https://accidentaldrivethru.com/">
 <meta property="og:title" content="Accidental Drive-Thru">
 <meta property="og:description" content="Columbus, Ohio's running count of days since a car crashed into a building. It has not been long.">
+<meta property="og:image" content="https://accidentaldrivethru.com/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Counter showing the days since a car crashed into a building in Columbus">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://accidentaldrivethru.com/assets/og.png">
 <title>Accidental Drive-Thru</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Barlow+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <style>
   :root{
     --ground:#E4DFD2;
@@ -66,9 +71,9 @@
   body{
     background:var(--ground);
     color:var(--ink);
-    font-family:"Barlow Condensed","Helvetica Neue",Arial,sans-serif;
-    font-size:17px;
-    line-height:1.45;
+    font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:16px;
+    line-height:1.5;
     -webkit-font-smoothing:antialiased;
   }
   .tape{
@@ -79,9 +84,9 @@
 
   header.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;}
   .eyebrow{
-    font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--muted);
+    font-size:14px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--muted);
   }
-  .site{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);}
+  .site{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;color:var(--muted);}
   .wordmark{
     font-family:"Bungee",Impact,sans-serif;
     font-size:clamp(24px,4.4vw,40px);
@@ -91,6 +96,82 @@
     padding-bottom:2px;
   }
   .site b{color:var(--ink);font-weight:600;}
+
+  /* ---- crashcon ---- */
+  .crashcon{
+    display:flex;align-items:stretch;
+    border:2px solid var(--ink);border-radius:4px;overflow:hidden;
+    background:var(--panel);
+  }
+  .cc-level{
+    display:flex;flex-direction:column;justify-content:center;gap:2px;
+    padding:12px 20px;min-width:168px;
+    background:var(--cc-color,var(--hazard));color:#14130F;
+  }
+  .cc-level span{font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.75;}
+  .cc-level strong{font-family:"Bungee",Impact,sans-serif;font-size:26px;font-weight:400;line-height:1;}
+  .cc-meaning{display:flex;flex-direction:column;justify-content:center;padding:12px 18px;flex:1;min-width:180px;}
+  .cc-meaning b{font-size:17px;font-weight:600;}
+  .cc-meaning small{color:var(--muted);font-size:14px;}
+  .cc-scale{display:flex;align-items:center;gap:4px;padding:12px 16px;border-left:1px solid var(--line);}
+  .cc-scale i{width:9px;height:26px;border-radius:2px;background:var(--line);font-style:normal;}
+  .cc-scale i.on{background:var(--cc-color,var(--hazard));}
+  @media (max-width:700px){.cc-scale{display:none;}}
+
+  /* ---- map + boards ---- */
+  .geo{display:flex;flex-direction:column;gap:18px;}
+  .map-wrap{
+    border:2px solid var(--ink);border-radius:4px;background:var(--panel);
+    padding:16px;position:relative;
+    display:flex;gap:24px;align-items:center;
+  }
+  @media (max-width:760px){.map-wrap{flex-direction:column;gap:14px;}}
+  .map-wrap svg{flex:0 1 520px;width:100%;max-width:520px;height:auto;display:block;}
+  .map-foot{
+    flex:1;min-width:210px;
+    display:flex;flex-direction:column;gap:9px;
+    font-size:13.5px;color:var(--muted);
+  }
+  .map-foot .map-head{color:var(--ink);font-weight:600;font-size:15px;}
+  .key{display:inline-flex;align-items:center;gap:7px;}
+  .key b{width:9px;height:9px;border-radius:50%;background:var(--alert);display:inline-block;}
+  .key b.approx{background:none;border:1.5px solid var(--alert);}
+  .dot{fill:var(--alert);cursor:pointer;}
+  .dot.approx{fill:none;stroke:var(--alert);stroke-width:1.6;}
+  .dot:hover,.dot:focus{fill:var(--hazard);stroke:var(--ink);stroke-width:1.5;outline:none;}
+  .map-tip{
+    position:absolute;pointer-events:none;opacity:0;transition:opacity .12s;
+    background:var(--ink);color:var(--panel);font-size:13px;line-height:1.35;
+    padding:6px 9px;border-radius:3px;max-width:210px;z-index:5;
+    font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  .map-tip b{display:block;font-size:14px;}
+  .map-tip.on{opacity:1;}
+
+  .boards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start;}
+  @media (max-width:900px){.boards{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media (max-width:600px){.boards{grid-template-columns:1fr;}}
+  .rank{border:1px solid var(--line);border-radius:3px;background:var(--panel);overflow:hidden;}
+  .rank h3{
+    margin:0;padding:10px 14px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);background:var(--panel-2);border-bottom:1px solid var(--line);font-weight:600;
+  }
+  .rank ol{list-style:none;margin:0;padding:6px 0;}
+  .rank li{
+    display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;
+    padding:6px 14px;font-size:14.5px;
+  }
+  .rank li .bar{
+    grid-column:1 / -1;height:3px;border-radius:2px;background:var(--alert);opacity:.55;
+  }
+  .rank li b{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .rank li span{color:var(--muted);font-size:13px;font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+  .rank p{margin:0;padding:9px 14px 11px;font-size:14px;color:var(--muted);border-top:1px dashed var(--line);}
+
+  /* ---- chart ---- */
+  .chart-wrap{border:1px solid var(--line);border-radius:3px;background:var(--panel);padding:16px 16px 10px;}
+  .chart-wrap svg{width:100%;height:auto;display:block;}
+  .chart-legend{font-size:14px;color:var(--muted);margin:8px 0 0;}
 
   /* ---- the board ---- */
   .board{
@@ -110,7 +191,7 @@
   .board-head .bolt{font-family:"Bungee",Impact,sans-serif;font-size:15px;letter-spacing:.04em;}
   .board-head .spacer{flex:1;}
   .board-head .status{
-    font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;
+    font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:600;
     background:#1A1813;color:var(--hazard);padding:3px 9px;border-radius:2px;
   }
   .board-body{
@@ -151,7 +232,7 @@
     100%{transform:perspective(300px) rotateX(0deg);}
   }
   .clock{
-    font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+    font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;
     font-size:15px;color:var(--muted);
     display:flex;flex-wrap:wrap;gap:6px 14px;
   }
@@ -162,7 +243,7 @@
     padding-top:16px;border-top:1px dashed var(--line);
   }
   .record div{display:flex;flex-direction:column;gap:2px;}
-  .record span{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .record span{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;}
   .record strong{font-family:"Bungee",Impact,sans-serif;font-size:20px;font-weight:400;}
 
   .art-col{
@@ -178,14 +259,15 @@
     display:flex;flex-wrap:wrap;align-items:center;gap:14px;
     padding:14px 18px;border-top:2px solid var(--ink);background:var(--panel);
   }
+  .foot-note{font-size:15px;color:var(--muted);flex:1;min-width:220px;}
 
   /* ---- stats ---- */
   .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden;}
   @media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));}}
   .stat{background:var(--panel);padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;}
-  .stat span{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .stat span{font-size:13px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600;}
   .stat strong{font-size:26px;font-weight:700;line-height:1.1;}
-  .stat small{font-size:13px;color:var(--muted);}
+  .stat small{font-size:14px;color:var(--muted);}
 
   /* ---- log ---- */
   section h2{
@@ -193,18 +275,18 @@
     letter-spacing:.02em;
   }
   .log-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--panel);}
-  table{border-collapse:collapse;width:100%;min-width:640px;font-family:"IBM Plex Mono",monospace;font-size:13px;}
+  table{border-collapse:collapse;width:100%;min-width:700px;font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;}
   th{
     text-align:left;padding:9px 14px;background:var(--panel-2);color:var(--muted);
-    font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:600;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
     border-bottom:1px solid var(--line);white-space:nowrap;
   }
   td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;}
   tr:last-child td{border-bottom:none;}
   td.date{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums;}
-  td.note{font-family:"Barlow Condensed",sans-serif;font-size:15px;}
+  td.note{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:1.5;}
   .pill{
-    display:inline-block;padding:1px 7px 2px;border-radius:999px;font-size:11px;font-weight:600;
+    display:inline-block;padding:2px 8px 3px;border-radius:999px;font-size:12px;font-weight:600;
     letter-spacing:.06em;text-transform:uppercase;
   }
   .pill.pedal{background:color-mix(in srgb,var(--alert) 18%,transparent);color:var(--alert);}
@@ -213,13 +295,13 @@
   :root[data-theme="dark"] .pill.reverse,
   :root:not([data-theme="light"]) .pill.reverse{color:var(--hazard);}
 
-  .log-note{margin:-4px 0 10px;font-size:14px;color:var(--muted);}
+  .log-note{margin:-4px 0 10px;font-size:15px;color:var(--muted);}
   a{color:var(--alert);text-decoration-thickness:1px;text-underline-offset:2px;}
   a:hover{color:var(--ink);}
   a:focus-visible{outline:2px solid var(--hazard);outline-offset:2px;}
-  td a{font-size:12px;white-space:nowrap;}
+  td a{font-size:13px;white-space:nowrap;}
   footer.fine{
-    font-size:13px;color:var(--muted);line-height:1.6;
+    font-size:14.5px;color:var(--muted);line-height:1.6;
     border-top:1px solid var(--line);padding-top:16px;
   }
   footer.fine b{color:var(--ink);font-weight:600;}
@@ -240,6 +322,12 @@
     </div>
     <div class="site">Sourced from <b>police blotter</b>, <b>local news</b>, and <b>one very tired glazier</b></div>
   </header>
+
+  <div class="crashcon" id="crashcon">
+    <div class="cc-level"><span>Crashcon</span><strong id="ccNum">&mdash;</strong></div>
+    <div class="cc-meaning"><b id="ccName">Reading the wire&hellip;</b><small id="ccWhy"></small></div>
+    <div class="cc-scale" id="ccScale"><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
 
   <div class="board" id="board">
     <div class="board-head">
@@ -371,26 +459,46 @@
   </div>
 
   <section>
+    <h2>Where they land</h2>
+    <div class="geo">
+      <div class="map-wrap">
+        <svg id="map" viewBox="0 0 600 460" role="img" aria-label="Map of Columbus with a dot for each logged crash"></svg>
+        <div class="map-tip" id="mapTip"></div>
+        <div class="map-foot">
+          <span class="map-head">Every crash this board has sourced</span>
+          <span class="key"><b></b> pinned to a street address</span>
+          <span class="key"><b class="approx"></b> pinned to a neighborhood</span>
+          <span id="mapUnplaced"></span>
+          <span>Yellow outline is the Columbus city limit &mdash; the ragged edge is annexation, not bad drawing.</span>
+        </div>
+      </div>
+      <div class="boards">
+        <div class="rank"><h3>Most-hit areas</h3><ol id="rankArea"></ol></div>
+        <div class="rank"><h3>What gets hit</h3><ol id="rankKind"></ol>
+          <p id="oddsNote"></p>
+        </div>
+        <div class="rank"><h3>Hit more than once</h3><ol id="rankRepeat"></ol></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Incidents logged per month</h2>
+    <div class="chart-wrap">
+      <svg id="chart" viewBox="0 0 720 210" role="img" aria-label="Bar chart of logged crashes per month"></svg>
+      <p class="chart-legend">Only what this board has sourced &mdash; real totals run higher. Paul Meara counted 71 in 2025 alone.</p>
+    </div>
+  </section>
+
+  <section>
     <h2>Incident log &mdash; Columbus, 2026</h2>
-    <p class="log-note">Real, sourced incidents. Not a complete list &mdash; nobody has one.</p>
+    <p class="log-note">Real, sourced incidents, newest first. Not a complete list &mdash; nobody has one.</p>
     <div class="log-wrap">
       <table>
         <thead>
           <tr><th>Date</th><th>Time</th><th>Target</th><th>Cause</th><th>What happened</th><th>Source</th></tr>
         </thead>
-        <tbody>
-          <tr><td class="date">Sep 1</td><td class="date">10:30</td><td>ECDC offices, E. Main St</td><td><span class="pill medical">unknown</span></td><td class="note">Straight through the front door. Nobody hurt.</td><td><a href="https://abc6onyourside.com/news/local/car-crashed-through-front-door-of-building-in-east-columbus-on-tuesday-morning-ecdc-development-company-main-street" target="_blank" rel="noopener">ABC6</a></td></tr>
-          <tr><td class="date">Aug 24</td><td class="date">&mdash;</td><td>Foxglove Hollow, 285 W. Center St</td><td><span class="pill medical">unknown</span></td><td class="note">Home decor shop posted the front window to Instagram.</td><td><a href="https://614now.com/2026/hot-topics/car-crashes-into-front-of-central-ohio-home-decor-store" target="_blank" rel="noopener">614NOW</a></td></tr>
-          <tr><td class="date">Aug 17</td><td class="date">&mdash;</td><td>Wild Goose Creative, 480 W. Town St</td><td><span class="pill medical">unknown</span></td><td class="note">&ldquo;Today we became part of a time-honored Columbus tradition.&rdquo;</td><td><a href="https://614now.com/2026/hot-topics/we-became-part-of-a-time-honored-columbus-tradition-car-crashes-into-columbus-arts-hub" target="_blank" rel="noopener">614NOW</a></td></tr>
-          <tr><td class="date">Jul 22</td><td class="date">&mdash;</td><td>Aardvark Wine &amp; Beer</td><td><span class="pill medical">unknown</span></td><td class="note">Shop filed it under &ldquo;run-in.&rdquo;</td><td><a href="https://614now.com/2026/hot-topics/columbus-wine-and-beer-shop-faces-property-damage-due-to-car-crash" target="_blank" rel="noopener">614NOW</a></td></tr>
-          <tr><td class="date">Jun 8</td><td class="date">&mdash;</td><td>Hoggy&rsquo;s BBQ, 830 Bethel Rd</td><td><span class="pill pedal">delivery</span></td><td class="note">Delivery driver hit it, backed up, hit it again. Killed the walk-in cooler. Second time since 2023.</td><td><a href="https://614now.com/2026/food-drink/it-happened-again-car-crashes-into-same-columbus-restaurant-for-the-second-time" target="_blank" rel="noopener">614NOW</a></td></tr>
-          <tr><td class="date">Apr 30</td><td class="date">&mdash;</td><td>Solis Mammography, 974 Bethel Rd</td><td><span class="pill medical">unknown</span></td><td class="note">Red crossover, into the building. Bethel Rd is having a year.</td><td><a href="https://614now.com/2026/hot-topics/car-crashes-into-columbus-mammogram-center" target="_blank" rel="noopener">614NOW</a></td></tr>
-          <tr><td class="date">Apr 2</td><td class="date">&mdash;</td><td>Chase Bank, 1600 Hilliard Rome Rd</td><td><span class="pill medical">unknown</span></td><td class="note">Hit the bank, finished in the bushes. No injuries.</td><td><a href="https://614now.com/2026/hot-topics/driver-crashes-into-west-columbus-bank-ends-up-in-bushes" target="_blank" rel="noopener">614NOW</a></td></tr>
-          <tr><td class="date">Mar 27</td><td class="date">16:30</td><td>Detached garage, Westgate</td><td><span class="pill pedal">hit &amp; run</span></td><td class="note">Stolen white Honda Accord. Driver got out and ran east.</td><td><a href="https://614now.com/2026/hot-topics/watch-car-crashes-into-garage-in-hilltop-neighborhood" target="_blank" rel="noopener">614NOW</a></td></tr>
-          <tr><td class="date">Feb 15</td><td class="date">04:00</td><td>Infinity Pharmacy</td><td><span class="pill medical">unknown</span></td><td class="note">Four in the morning, through the storefront.</td><td><a href="https://614now.com/2026/hot-topics/car-crashing-into-building/car-crashes-into-columbus-pharmacy" target="_blank" rel="noopener">614NOW</a></td></tr>
-          <tr><td class="date">Jan 23</td><td class="date">&mdash;</td><td>Mezcla, 1022 Summit St</td><td><span class="pill medical">unknown</span></td><td class="note">Restaurant closed afterward. One person injured.</td><td><a href="https://columbusunderground.com/mezcla-closes-after-car-crashes-into-building-ak1/" target="_blank" rel="noopener">Columbus Underground</a></td></tr>
-          <tr><td class="date">Jan 1</td><td class="date">19:55</td><td>Meister&rsquo;s Bar and Pizza, 1186 Chambers Rd</td><td><span class="pill reverse">parking</span></td><td class="note">Silver SUV, apparently trying to park. First of the year, eight hours before midnight.</td><td><a href="https://614now.com/2026/hot-topics/first-of-the-year-crash-crashes-into-columbus-pizza-spot-on-new-years-day" target="_blank" rel="noopener">614NOW</a></td></tr>
-        </tbody>
+        <tbody id="logBody"></tbody>
       </table>
     </div>
   </section>
@@ -398,25 +506,47 @@
   <footer class="fine">
     <b>How this works.</b> The counter runs from the most recent crash we could source, not from the most recent crash. Columbus almost certainly beat this board while you were reading it.<br>
     <b>Credit where due.</b> Paul Meara has tracked these as <a href="https://www.instagram.com/cbuscarikaze/" target="_blank" rel="noopener">@cbuscarikaze</a> since 2022 and logged 71 in 2025 alone. Incident details from <a href="https://614now.com/" target="_blank" rel="noopener">614NOW</a>, <a href="https://columbusunderground.com/" target="_blank" rel="noopener">Columbus Underground</a>, ABC6 and NBC4.<br>
+    <b>Map data.</b> Boundaries and coordinates from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, ODbL. Dots drawn hollow are placed by neighborhood, not by address.<br>
     <b>Reminder.</b> A parking block is not a bollard. A planter is not a bollard. A bollard is not a bollard unless it is rated, anchored, and filled.<br>
-    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;">accidentaldrivethru.com</span>
+    <span style="font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;">accidentaldrivethru.com</span>
   </footer>
 </div>
 
+<!-- DATA:START -->
+<script id="incidents" type="application/json">[{"date":"2026-09-01","time":"10:30","name":"ECDC offices","address":"E. Main St","area":"East Columbus","kind":"office","cause":"unknown","note":"Straight through the front door. Nobody hurt.","source":"ABC6","url":"https://abc6onyourside.com/news/local/car-crashed-through-front-door-of-building-in-east-columbus-on-tuesday-morning-ecdc-development-company-main-street","lat":39.95476,"lon":-82.85301,"geo":"street"},{"date":"2026-08-31","time":"","name":"Brick wall, Clintonville","address":"","area":"Clintonville","kind":"other","cause":"unknown","note":"Through a brick wall, narrowly missing pedestrians.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-drives-through-brick-wall-in-clintonville-almost-hitting-pedestrians","lat":40.0392,"lon":-83.0096,"geo":"area"},{"date":"2026-08-24","time":"","name":"Foxglove Hollow","address":"285 W. Center St","area":"Central Ohio","kind":"retail","cause":"unknown","note":"Home decor shop posted the front window to Instagram.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-front-of-central-ohio-home-decor-store","lat":39.98779,"lon":-82.91677,"geo":"address"},{"date":"2026-08-17","time":"","name":"Wild Goose Creative","address":"480 W. Town St","area":"Franklinton","kind":"nonprofit","cause":"unknown","note":"“Today we became part of a time-honored Columbus tradition.”","source":"614NOW","url":"https://614now.com/2026/hot-topics/we-became-part-of-a-time-honored-columbus-tradition-car-crashes-into-columbus-arts-hub","lat":39.95741,"lon":-83.01289,"geo":"address"},{"date":"2026-07-22","time":"","name":"Aardvark Wine & Beer","address":"","area":"Columbus","kind":"bar","cause":"unknown","note":"Shop filed it under “run-in.”","source":"614NOW","url":"https://614now.com/2026/hot-topics/columbus-wine-and-beer-shop-faces-property-damage-due-to-car-crash","geo":"none"},{"date":"2026-07-13","time":"","name":"German Village restaurant","address":"","area":"German Village","kind":"restaurant","cause":"unknown","note":"Second German Village business hit in eight days.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-beloved-german-village-restaurant","lat":39.9464,"lon":-82.99285,"geo":"area"},{"date":"2026-07-06","time":"","name":"High Street bar","address":"High St","area":"German Village","kind":"bar","cause":"unknown","note":"Hit two weeks after reopening from a remodel.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-german-village-bar-two-weeks-after-remodel","lat":39.96301,"lon":-82.99822,"geo":"street"},{"date":"2026-06-08","time":"","name":"Hoggy's BBQ","address":"830 Bethel Rd","area":"Northwest","kind":"restaurant","cause":"delivery","note":"Delivery driver hit it, backed up, hit it again. Killed the walk-in cooler. Second time since 2023.","source":"614NOW","url":"https://614now.com/2026/food-drink/it-happened-again-car-crashes-into-same-columbus-restaurant-for-the-second-time","lat":40.06362,"lon":-83.04102,"geo":"address"},{"date":"2026-04-30","time":"","name":"Solis Mammography","address":"974 Bethel Rd","area":"Northwest","kind":"medical","cause":"unknown","note":"Red crossover. Second Bethel Rd building hit this year.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashes-into-columbus-mammogram-center","lat":40.0634,"lon":-83.04506,"geo":"address"},{"date":"2026-04-02","time":"","name":"Chase Bank","address":"1600 Hilliard Rome Rd","area":"West Side","kind":"bank","cause":"unknown","note":"Hit the bank, finished in the bushes. No injuries.","source":"614NOW","url":"https://614now.com/2026/hot-topics/driver-crashes-into-west-columbus-bank-ends-up-in-bushes","lat":39.98394,"lon":-83.15,"geo":"address"},{"date":"2026-03-27","time":"16:30","name":"Detached garage","address":"","area":"Westgate","kind":"home","cause":"hit & run","note":"Stolen white Honda Accord. Driver got out and ran east.","source":"614NOW","url":"https://614now.com/2026/hot-topics/watch-car-crashes-into-garage-in-hilltop-neighborhood","lat":39.94665,"lon":-83.0822,"geo":"area"},{"date":"2026-02-27","time":"","name":"Clintonville business","address":"","area":"Clintonville","kind":"retail","cause":"unknown","note":"","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashing-into-building/car-crashes-into-clintonville-business","lat":40.0392,"lon":-83.0096,"geo":"area"},{"date":"2026-02-15","time":"04:00","name":"Infinity Pharmacy","address":"","area":"Columbus","kind":"retail","cause":"unknown","note":"Four in the morning, through the storefront.","source":"614NOW","url":"https://614now.com/2026/hot-topics/car-crashing-into-building/car-crashes-into-columbus-pharmacy","geo":"none"},{"date":"2026-01-23","time":"","name":"Mezcla","address":"1022 Summit St","area":"Weinland Park","kind":"restaurant","cause":"unknown","note":"Restaurant closed afterward. One person injured.","source":"Columbus Underground","url":"https://columbusunderground.com/mezcla-closes-after-car-crashes-into-building-ak1/","lat":39.98358,"lon":-83.00132,"geo":"address"},{"date":"2026-01-01","time":"19:55","name":"Meister's Bar and Pizza","address":"1186 Chambers Rd","area":"Grandview","kind":"restaurant","cause":"parking","note":"Silver SUV, apparently trying to park. First of the year, four hours before midnight.","source":"614NOW","url":"https://614now.com/2026/hot-topics/first-of-the-year-crash-crashes-into-columbus-pizza-spot-on-new-years-day","lat":39.99374,"lon":-83.03975,"geo":"address"},{"date":"2025-01-15","time":"19:00","name":"Hobby Lobby","address":"Hilliard-Rome Rd","area":"West Side","kind":"retail","cause":"unknown","note":"SUV through the entrance.","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/incidents-of-cars-into-buildings-seems-to-be-climbing-in-columbus/","lat":40.00107,"lon":-83.15349,"geo":"street"},{"date":"2025-01-02","time":"","name":"Vow Studio + Salon","address":"W. 5th Ave","area":"Marble Cliff","kind":"retail","cause":"unknown","note":"Up a hill, up a flight of stairs, into the storefront. Repairs took nine months.","source":"NBC4","url":"https://www.nbc4i.com/news/local-news/columbus/columbus-car-crashes-building/","lat":39.98741,"lon":-83.01383,"geo":"address"},{"date":"2023-01-15","time":"","name":"Hoggy's BBQ","address":"830 Bethel Rd","area":"Northwest","kind":"restaurant","cause":"drunk","note":"First time. Drunk driver, front entrance, closed several weeks.","source":"614NOW","url":"https://614now.com/2026/food-drink/it-happened-again-car-crashes-into-same-columbus-restaurant-for-the-second-time","lat":40.06362,"lon":-83.04102,"geo":"address"},{"date":"2022-11-03","time":"","name":"Three buildings in one night","address":"","area":"Columbus","kind":"other","cause":"unknown","note":"Three separate crashes, same night, three people injured. Still the record.","source":"Wikipedia","url":"https://en.wikipedia.org/wiki/Carikaze","geo":"none"}]</script>
+<script id="geo" type="application/json">{"county":[[-83.2607,40.003],[-83.2461,39.9876],[-83.2496,39.9726],[-83.2256,39.9327],[-83.252,39.9174],[-83.2437,39.8125],[-82.8243,39.7949],[-82.8215,39.824],[-82.8024,39.823],[-82.7943,39.9108],[-82.8131,39.9117],[-82.8108,39.9411],[-82.7824,39.9397],[-82.7794,39.9764],[-82.7736,39.9761],[-82.7618,40.1259],[-83.1698,40.1428],[-83.1701,40.107],[-83.2066,40.1077],[-83.212,40.0475],[-83.2551,40.0483],[-83.2515,40.0082],[-83.2607,40.003]],"city":[[-83.2102,40.0692],[-83.2025,40.0638],[-83.1831,40.0644],[-83.1825,40.0602],[-83.1759,40.0593],[-83.1786,40.0541],[-83.1714,40.0537],[-83.1539,40.0583],[-83.1563,40.0689],[-83.1458,40.0663],[-83.1334,40.07],[-83.1293,40.0548],[-83.1214,40.0574],[-83.1215,40.0522],[-83.1107,40.0537],[-83.1125,40.0662],[-83.1168,40.0666],[-83.108,40.067],[-83.0973,40.0508],[-83.0994,40.0365],[-83.0954,40.0284],[-83.1025,40.0253],[-83.0986,40.0222],[-83.1112,40.0262],[-83.1105,40.0306],[-83.0988,40.0324],[-83.1106,40.0308],[-83.1112,40.034],[-83.1204,40.0286],[-83.1118,40.0211],[-83.1202,40.0199],[-83.1202,40.0113],[-83.154,40.0206],[-83.1585,40.0179],[-83.1473,40.0101],[-83.1539,40.0055],[-83.1537,40.0089],[-83.1597,40.0091],[-83.1634,40.0041],[-83.1661,40.0156],[-83.1597,40.0189],[-83.1738,40.0178],[-83.1753,40.011],[-83.1836,40.0141],[-83.1715,40.0037],[-83.1703,39.9894],[-83.164,39.9894],[-83.1677,39.9831],[-83.1597,39.9825],[-83.1612,39.9773],[-83.1742,39.9752],[-83.166,39.9726],[-83.1724,39.9721],[-83.1662,39.9707],[-83.1733,39.9668],[-83.1719,39.9564],[-83.1608,39.9509],[-83.1709,39.9503],[-83.1729,39.9446],[-83.1575,39.9354],[-83.159,39.9319],[-83.1529,39.9316],[-83.1698,39.9321],[-83.1624,39.9255],[-83.1707,39.9283],[-83.1702,39.9229],[-83.1784,39.9256],[-83.178,39.922],[-83.1629,39.9194],[-83.1628,39.9232],[-83.153,39.9241],[-83.1525,39.9121],[-83.1454,39.9121],[-83.1564,39.9115],[-83.1567,39.9058],[-83.1438,39.9032],[-83.1538,39.8935],[-83.1547,39.8827],[-83.1403,39.8837],[-83.1401,39.8891],[-83.1199,39.8902],[-83.1195,39.8996],[-83.1075,39.8983],[-83.1131,39.9021],[-83.1095,39.9099],[-83.102,39.9021],[-83.0946,39.9071],[-83.1027,39.91],[-83.0893,39.9069],[-83.085,39.913],[-83.0903,39.9156],[-83.0825,39.9183],[-83.0758,39.9166],[-83.0817,39.9137],[-83.0778,39.9111],[-83.0806,39.9079],[-83.0719,39.908],[-83.0721,39.9037],[-83.0696,39.9098],[-83.0628,39.9079],[-83.0652,39.9024],[-83.0457,39.8965],[-83.043,39.9068],[-83.0368,39.9058],[-83.0389,39.9025],[-83.0354,39.9015],[-83.0444,39.9002],[-83.0424,39.8948],[-83.035,39.8968],[-83.0324,39.9035],[-83.0253,39.9024],[-83.0305,39.8998],[-83.0264,39.8985],[-83.0274,39.8863],[-83.0178,39.881],[-83.0247,39.8727],[-83.0232,39.8622],[-83.0166,39.8582],[-83.0193,39.847],[-83.0084,39.845],[-83.009,39.8345],[-82.9998,39.8341],[-83.0011,39.8243],[-83.0326,39.8217],[-83.0315,39.8095],[-82.9957,39.8104],[-82.9989,39.8183],[-82.9844,39.8175],[-82.9751,39.8108],[-82.9638,39.8152],[-82.9655,39.8109],[-82.959,39.8231],[-82.9547,39.8229],[-82.9578,39.8252],[-82.9394,39.8232],[-82.9331,39.8161],[-82.9293,39.8227],[-82.9328,39.8232],[-82.92,39.8274],[-82.9352,39.8268],[-82.9363,39.8441],[-82.9543,39.8385],[-82.9558,39.8457],[-82.9675,39.8462],[-82.9696,39.8319],[-82.9601,39.833],[-82.9654,39.827],[-82.973,39.8274],[-82.9685,39.8191],[-82.9739,39.8284],[-82.9864,39.8318],[-82.9801,39.8322],[-82.981,39.8557],[-82.9899,39.8562],[-82.9941,39.8622],[-82.9891,39.8631],[-82.9882,39.8732],[-83.0009,39.8734],[-83.0055,39.8681],[-83.0076,39.8768],[-83.0005,39.8797],[-82.9999,39.8751],[-82.9812,39.8737],[-82.9809,39.8784],[-82.9741,39.8803],[-82.9728,39.8733],[-82.9631,39.8729],[-82.9614,39.8902],[-82.9302,39.8887],[-82.9306,39.8835],[-82.9088,39.8761],[-82.8995,39.8779],[-82.8987,39.8879],[-82.8808,39.8884],[-82.8642,39.8839],[-82.8667,39.8793],[-82.8461,39.8701],[-82.8455,39.8769],[-82.8515,39.8755],[-82.8594,39.8821],[-82.8581,39.8891],[-82.8539,39.8891],[-82.8518,39.8826],[-82.8352,39.8843],[-82.8364,39.8703],[-82.8305,39.8672],[-82.8354,39.8675],[-82.8359,39.8621],[-82.8026,39.8601],[-82.809,39.8629],[-82.8084,39.8678],[-82.7984,39.8672],[-82.7972,39.88],[-82.8052,39.8783],[-82.8053,39.8969],[-82.8105,39.8971],[-82.8101,39.9017],[-82.799,39.9002],[-82.8041,39.9082],[-82.7873,39.9136],[-82.788,39.9256],[-82.797,39.9316],[-82.8299,39.9341],[-82.8301,39.9419],[-82.836,39.9425],[-82.8306,39.9435],[-82.8326,39.9567],[-82.8191,39.9573],[-82.8186,39.9632],[-82.8279,39.9637],[-82.8273,39.9709],[-82.8388,39.9777],[-82.8029,39.9774],[-82.8034,39.985],[-82.7727,39.9872],[-82.7768,39.987],[-82.7759,39.9983],[-82.7813,39.9986],[-82.7718,39.9984],[-82.7713,40.0045],[-82.7875,40.0021],[-82.7807,40.0094],[-82.7986,40.0083],[-82.7908,40.0063],[-82.7911,40.0016],[-82.7989,40.002],[-82.8015,39.9899],[-82.8103,39.9894],[-82.815,39.9914],[-82.8096,39.9934],[-82.8159,39.9952],[-82.8439,39.9871],[-82.8576,39.9867],[-82.8573,39.995],[-82.8687,39.9971],[-82.8732,40.0057],[-82.9013,40.0103],[-82.9301,39.9965],[-82.9107,40.0096],[-82.9109,40.0275],[-82.9063,40.0202],[-82.8999,40.0462],[-82.8884,40.0461],[-82.8886,40.0564],[-82.8269,40.0537],[-82.8267,40.0498],[-82.8264,40.0537],[-82.8104,40.0531],[-82.8432,40.0546],[-82.8386,40.0691],[-82.8423,40.0756],[-82.8316,40.0734],[-82.8348,40.08],[-82.844,40.0792],[-82.8456,40.0863],[-82.835,40.083],[-82.8353,40.0899],[-82.828,40.0868],[-82.8282,40.0809],[-82.8217,40.0842],[-82.8241,40.0879],[-82.8167,40.0907],[-82.8161,40.0981],[-82.822,40.0984],[-82.8209,40.1132],[-82.8299,40.1136],[-82.8311,40.1064],[-82.8349,40.1065],[-82.8345,40.1122],[-82.8389,40.1113],[-82.8344,40.1138],[-82.8399,40.1141],[-82.8378,40.1089],[-82.8456,40.1071],[-82.8451,40.1143],[-82.8545,40.1148],[-82.857,40.1097],[-82.8648,40.1174],[-82.8676,40.1105],[-82.8597,40.1102],[-82.8604,40.1006],[-82.8668,40.1019],[-82.8731,40.0958],[-82.8674,40.0956],[-82.8666,40.0861],[-82.89,40.0941],[-82.8953,40.0855],[-82.8922,40.0799],[-82.9194,40.0809],[-82.9338,40.0974],[-82.9255,40.097],[-82.928,40.1012],[-82.9495,40.104],[-82.9493,40.1077],[-82.9359,40.1032],[-82.9444,40.1106],[-82.966,40.1073],[-82.9746,40.1119],[-82.9708,40.1356],[-82.9558,40.151],[-82.9949,40.1572],[-82.9971,40.152],[-83.0059,40.1523],[-83.0056,40.1445],[-82.9998,40.1444],[-83.0055,40.1424],[-83.0051,40.1381],[-83.0068,40.1504],[-83.0113,40.1506],[-83.0113,40.146],[-83.0177,40.1463],[-83.0149,40.1399],[-83.0108,40.1434],[-83.0114,40.1366],[-83.0375,40.1374],[-83.0363,40.134],[-83.0409,40.1339],[-83.0412,40.1376],[-83.0574,40.1381],[-83.0561,40.132],[-83.0336,40.1332],[-83.0367,40.1261],[-83.0211,40.1269],[-83.0166,40.1227],[-83.0593,40.1219],[-83.0638,40.1383],[-83.0894,40.1392],[-83.0918,40.0937],[-83.1079,40.0945],[-83.114,40.0882],[-83.1081,40.0682],[-83.1133,40.0689],[-83.1136,40.0759],[-83.131,40.0764],[-83.1366,40.0814],[-83.1435,40.0792],[-83.1393,40.0683],[-83.1442,40.0679],[-83.1467,40.0736],[-83.1585,40.0738],[-83.1622,40.0721],[-83.1609,40.0626],[-83.1688,40.0699],[-83.1969,40.0666],[-83.198,40.0749],[-83.2102,40.0692]]}</script>
+<!-- DATA:END -->
+
 <script>
-  // ---- the one line you edit ----
-  // Most recent sourced crash: ECDC offices, E. Main St, Sep 1 2026 (ABC6).
-  var FACTORY_INCIDENT = "2026-09-01T10:30:00";
-  var TYPICAL_GAP_DAYS = 5;
+  // Data is injected into the block above by scripts/build.py from data/incidents.json.
+  var INCIDENTS = (function(){
+    var el = document.getElementById("incidents");
+    try { return el ? JSON.parse(el.textContent) : []; } catch(e){ return []; }
+  })();
+
+  var CRASHCON = [
+    {n:1, name:"IMPACT",            color:"#D2401E", why:"A crash is on the wire right now."},
+    {n:2, name:"GLASS ON THE SIDEWALK", color:"#E2711D", why:"Within 48 hours. Somebody is still sweeping."},
+    {n:3, name:"NORMAL COLUMBUS",   color:"#F0B400", why:"Running at the usual pace."},
+    {n:4, name:"QUIET",             color:"#8FA31E", why:"Longer than usual without one. Enjoy it."},
+    {n:5, name:"SUSPICIOUSLY CALM", color:"#4C8577", why:"This does not last. Check your bollards."}
+  ];
+
+  function parseIncident(inc){
+    return new Date((inc.date || "1970-01-01") + "T" + (inc.time || "12:00") + ":00");
+  }
+
+  var ordered = INCIDENTS.slice().sort(function(a,b){
+    return parseIncident(b) - parseIncident(a);
+  });
+  var latest = ordered.length ? parseIncident(ordered[0]) : new Date();
 
   var digitsEl = document.getElementById("digits");
   var hmsEl    = document.getElementById("hms");
   var stampEl  = document.getElementById("lastStamp");
   var statusEl = document.getElementById("status");
-
-  function lastIncident(){ return new Date(FACTORY_INCIDENT); }
-
   var FMT = { month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", hour12:false };
+
   function pad(n, w){ n = String(n); while(n.length < w) n = "0" + n; return n; }
 
   function setDigits(days){
@@ -432,9 +562,40 @@
     }
   }
 
+  // Thresholds run against the citywide cadence, not this log. Paul Meara
+  // counted 71 crashes in 2025 — about one every five days — and says that
+  // still undercounts. What this board has sourced is shown alongside it.
+  var CITYWIDE_GAP = 365 / 71;
+
+  function crashconFor(days){
+    var yearAgo = Date.now() - 365*86400000;
+    var logged  = ordered.filter(function(i){ return parseIncident(i) >= yearAgo; }).length;
+    var ourGap  = logged > 1 ? 365 / logged : null;
+    var level = days < 1  ? CRASHCON[0]
+              : days < 2  ? CRASHCON[1]
+              : days <= 7 ? CRASHCON[2]
+              : days <= 21? CRASHCON[3]
+              : CRASHCON[4];
+    return {level:level, ourGap:ourGap};
+  }
+
+  function paintCrashcon(days){
+    var r = crashconFor(days), lv = r.level;
+    var bar = document.getElementById("crashcon");
+    bar.style.setProperty("--cc-color", lv.color);
+    document.getElementById("ccNum").textContent  = lv.n;
+    document.getElementById("ccName").textContent = lv.name;
+    document.getElementById("ccWhy").textContent = lv.why +
+      " Citywide, one lands every " + CITYWIDE_GAP.toFixed(1) + " days" +
+      (r.ourGap ? "; this board has sourced one every " + r.ourGap.toFixed(0) : "") + ".";
+    var pips = document.getElementById("ccScale").children;
+    for (var i = 0; i < pips.length; i++){
+      pips[i].className = (i < (6 - lv.n)) ? "on" : "";
+    }
+  }
+
   function tick(){
-    var last = lastIncident();
-    var ms   = Date.now() - last.getTime();
+    var ms = Date.now() - latest.getTime();
     if (ms < 0) ms = 0;
     var days = Math.floor(ms / 86400000);
     var rem  = ms % 86400000;
@@ -443,14 +604,231 @@
     hmsEl.textContent = pad(Math.floor(rem/3600000),2) + ":" +
                         pad(Math.floor(rem/60000)%60,2) + ":" +
                         pad(Math.floor(rem/1000)%60,2);
-    stampEl.textContent = last.toLocaleString(undefined, FMT);
-    if (days === 0)                        statusEl.textContent = "CLEANUP IN PROGRESS";
-    else if (days < 3)                     statusEl.textContent = "SHAKEN";
-    else if (days > TYPICAL_GAP_DAYS * 4)  statusEl.textContent = "SUSPICIOUSLY QUIET";
-    else if (days > TYPICAL_GAP_DAYS)      statusEl.textContent = "BEATING THE AVERAGE";
-    else                                   statusEl.textContent = "MONITORING";
+    stampEl.textContent = latest.toLocaleString(undefined, FMT);
+    statusEl.textContent = days === 0 ? "CLEANUP IN PROGRESS" : "MONITORING";
+    paintCrashcon(days);
   }
 
+  // ---- log table ----
+  function esc(t){ return String(t == null ? "" : t).replace(/[&<>"]/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];
+  }); }
+
+  var PILL = { "hit & run":"pedal", "drunk":"pedal", "delivery":"pedal",
+               "parking":"reverse", "reverse":"reverse" };
+
+  function renderLog(){
+    var rows = ordered.map(function(i){
+      var d = parseIncident(i);
+      var when = d.toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"});
+      var where = esc(i.name) + (i.address ? ", " + esc(i.address) : "");
+      var pill = PILL[i.cause] || "medical";
+      return "<tr>" +
+        '<td class="date">' + when + "</td>" +
+        '<td class="date">' + (i.time ? esc(i.time) : "&mdash;") + "</td>" +
+        "<td>" + where + (i.area ? '<br><span style="color:var(--muted)">' + esc(i.area) + "</span>" : "") + "</td>" +
+        '<td><span class="pill ' + pill + '">' + esc(i.cause || "unknown") + "</span></td>" +
+        '<td class="note">' + esc(i.note) + (i.review ? " <em>(unverified)</em>" : "") + "</td>" +
+        '<td><a href="' + esc(i.url) + '" target="_blank" rel="noopener">' + esc(i.source) + "</a></td>" +
+        "</tr>";
+    });
+    document.getElementById("logBody").innerHTML = rows.join("");
+  }
+
+  // ---- per-month chart ----
+  function renderChart(){
+    var svg = document.getElementById("chart");
+    var MONTHS = 24, now = new Date();
+    var buckets = [], index = {};
+    for (var k = MONTHS - 1; k >= 0; k--){
+      var d = new Date(now.getFullYear(), now.getMonth() - k, 1);
+      var key = d.getFullYear() + "-" + pad(d.getMonth()+1, 2);
+      index[key] = buckets.length;
+      buckets.push({key:key, date:d, n:0});
+    }
+    ordered.forEach(function(i){
+      var key = (i.date || "").slice(0, 7);
+      if (key in index) buckets[index[key]].n++;
+    });
+
+    var W = 720, H = 210, padL = 28, padR = 8, padT = 14, base = H - 34;
+    var max = Math.max(3, Math.max.apply(null, buckets.map(function(b){ return b.n; })));
+    var step = (W - padL - padR) / buckets.length;
+    var bw = Math.min(26, step * 0.62);
+    var out = [];
+
+    // gridlines, labelled with values the chart actually reaches
+    for (var g = 0; g <= max; g += Math.ceil(max / 3)){
+      var y = base - (g / max) * (base - padT);
+      out.push('<line x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (W - padR) +
+               '" y2="' + y.toFixed(1) + '" stroke="var(--line)" stroke-width="1"/>');
+      out.push('<text x="' + (padL - 7) + '" y="' + (y + 4).toFixed(1) +
+               '" text-anchor="end" font-size="12.5" fill="var(--muted)" ' +
+               'font-family="JetBrains Mono, monospace">' + g + "</text>");
+    }
+
+    buckets.forEach(function(b, idx){
+      var x = padL + idx * step + (step - bw) / 2;
+      var h = b.n === 0 ? 0 : Math.max(3, (b.n / max) * (base - padT));
+      if (h > 0){
+        out.push('<rect x="' + x.toFixed(1) + '" y="' + (base - h).toFixed(1) +
+                 '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) +
+                 '" rx="2" fill="var(--alert)"><title>' + b.key + ": " + b.n +
+                 (b.n === 1 ? " crash" : " crashes") + "</title></rect>");
+      }
+      if (b.date.getMonth() === 0 || idx === 0 || idx === buckets.length - 1){
+        out.push('<text x="' + (x + bw/2).toFixed(1) + '" y="' + (base + 26) +
+                 '" text-anchor="middle" font-size="12.5" fill="var(--muted)" ' +
+                 'font-family="JetBrains Mono, monospace">' +
+                 b.date.toLocaleDateString(undefined, {month:"short"}) + " " +
+                 String(b.date.getFullYear()).slice(2) + "</text>");
+      }
+    });
+
+    out.push('<line x1="' + padL + '" y1="' + base + '" x2="' + (W - padR) +
+             '" y2="' + base + '" stroke="var(--ink)" stroke-width="2"/>');
+    svg.innerHTML = out.join("");
+  }
+
+  // ---- map ----
+  var GEO = (function(){
+    var el = document.getElementById("geo");
+    try { return el ? JSON.parse(el.textContent) : {}; } catch(e){ return {}; }
+  })();
+
+  function renderMap(){
+    var svg = document.getElementById("map"), tip = document.getElementById("mapTip");
+    var county = GEO.county || [], city = GEO.city || [];
+    var placed = ordered.filter(function(i){ return typeof i.lat === "number"; });
+    if (!county.length && !placed.length) return;
+
+    // Equirectangular, with longitude squeezed by cos(lat) so Columbus isn't stretched.
+    var all = county.concat(city).concat(placed.map(function(i){ return [i.lon, i.lat]; }));
+    var lons = all.map(function(p){ return p[0]; }), lats = all.map(function(p){ return p[1]; });
+    var minLon = Math.min.apply(null, lons), maxLon = Math.max.apply(null, lons);
+    var minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats);
+    var k = Math.cos((minLat + maxLat) / 2 * Math.PI / 180);
+
+    var W = 600, H = 460, pad = 14;
+    var spanX = (maxLon - minLon) * k, spanY = maxLat - minLat;
+    var scale = Math.min((W - pad*2) / spanX, (H - pad*2) / spanY);
+    var offX = (W - spanX * scale) / 2, offY = (H - spanY * scale) / 2;
+    function px(lon, lat){
+      return [ offX + (lon - minLon) * k * scale,
+               offY + (maxLat - lat) * scale ];
+    }
+    function path(ring){
+      return ring.map(function(p, n){
+        var q = px(p[0], p[1]);
+        return (n ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1);
+      }).join("") + "Z";
+    }
+
+    var out = [];
+    if (county.length){
+      out.push('<path d="' + path(county) + '" fill="var(--panel-2)" stroke="var(--line)" stroke-width="1.5"/>');
+    }
+    if (city.length){
+      out.push('<path d="' + path(city) + '" fill="var(--hazard)" fill-opacity=".13" ' +
+               'stroke="var(--hazard-deep)" stroke-width="1.2" stroke-linejoin="round"/>');
+    }
+
+    placed.forEach(function(inc, n){
+      var q = px(inc.lon, inc.lat);
+      var approx = inc.geo === "area" || inc.geo === "street";
+      out.push('<circle class="dot' + (approx ? " approx" : "") + '" data-i="' + n +
+               '" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="6" tabindex="0">' +
+               "<title>" + esc(inc.name) + "</title></circle>");
+    });
+    svg.innerHTML = out.join("");
+
+    var unplaced = ordered.length - placed.length;
+    document.getElementById("mapUnplaced").textContent =
+      unplaced ? unplaced + " too vague to place" : "";
+
+    function show(e){
+      var n = e.target.getAttribute("data-i");
+      if (n === null) return;
+      var inc = placed[+n], box = svg.getBoundingClientRect();
+      var wrap = svg.parentNode.getBoundingClientRect();
+      var cx = +e.target.getAttribute("cx"), cy = +e.target.getAttribute("cy");
+      tip.innerHTML = "<b>" + esc(inc.name) + "</b>" +
+        new Date(inc.date + "T12:00:00").toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"}) +
+        (inc.area ? " &middot; " + esc(inc.area) : "");
+      tip.classList.add("on");
+      var x = box.left - wrap.left + (cx / 600) * box.width;
+      var y = box.top  - wrap.top  + (cy / 460) * box.height;
+      tip.style.left = Math.max(4, Math.min(x - 100, wrap.width - 220)) + "px";
+      tip.style.top  = Math.max(4, y - 58) + "px";
+    }
+    svg.addEventListener("mouseover", show);
+    svg.addEventListener("focusin", show);
+    svg.addEventListener("mouseout", function(){ tip.classList.remove("on"); });
+    svg.addEventListener("focusout", function(){ tip.classList.remove("on"); });
+  }
+
+  // ---- leaderboards ----
+  function tally(key){
+    var counts = {};
+    ordered.forEach(function(i){
+      var v = i[key];
+      if (!v || v === "unknown" || v === "other") return;
+      counts[v] = (counts[v] || 0) + 1;
+    });
+    return Object.keys(counts).map(function(k){ return {label:k, n:counts[k]}; })
+                 .sort(function(a,b){ return b.n - a.n || a.label.localeCompare(b.label); });
+  }
+
+  function fillRank(id, rows, limit, suffix){
+    var top = rows.slice(0, limit);
+    var max = top.length ? top[0].n : 1;
+    document.getElementById(id).innerHTML = top.map(function(r){
+      return "<li>" + esc(r.label) +
+             "<b>" + r.n + "</b>" +
+             (suffix ? "<span>" + suffix(r) + "</span>" : "<span></span>") +
+             '<i class="bar" style="width:' + Math.round(r.n / max * 100) + '%"></i></li>';
+    }).join("");
+  }
+
+  function renderBoards(){
+    var areas = tally("area").filter(function(r){ return r.label !== "Columbus" && r.label !== "Central Ohio"; });
+    fillRank("rankArea", areas, 6);
+
+    // Implied odds: where the next one lands, from the historical mix.
+    var kinds = tally("kind");
+    var total = kinds.reduce(function(s, r){ return s + r.n; }, 0) || 1;
+    fillRank("rankKind", kinds, 6, function(r){ return Math.round(r.n / total * 100) + "%"; });
+    document.getElementById("oddsNote").textContent =
+      "Implied odds for the next one, straight from the mix above. Not advice. " +
+      "There is no market on this yet.";
+
+    // Repeat victims, matched on name or street address.
+    var byPlace = {};
+    ordered.forEach(function(i){
+      var key = (i.address || i.name || "").toLowerCase().trim();
+      if (!key) return;
+      (byPlace[key] = byPlace[key] || {label:i.name, address:i.address, hits:[]}).hits.push(i);
+    });
+    var repeats = Object.keys(byPlace).map(function(k){ return byPlace[k]; })
+      .filter(function(p){ return p.hits.length > 1; })
+      .sort(function(a,b){ return b.hits.length - a.hits.length; })
+      .map(function(p){
+        var years = p.hits.map(function(h){ return h.date.slice(0,4); }).sort();
+        return {label:p.label + (p.address ? ", " + p.address : ""), n:p.hits.length,
+                years:years.join(" & ")};
+      });
+    if (repeats.length){
+      fillRank("rankRepeat", repeats, 5, function(r){ return r.years; });
+    } else {
+      document.getElementById("rankRepeat").innerHTML =
+        '<li style="color:var(--muted)">Nothing hit twice yet in this log.<span></span><span></span></li>';
+    }
+  }
+
+  renderLog();
+  renderChart();
+  renderMap();
+  renderBoards();
   tick();
   setInterval(tick, 1000);
 </script>
